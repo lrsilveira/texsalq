@@ -1,4 +1,0 @@
-arquivo novo
-linha 2
-
-outro
