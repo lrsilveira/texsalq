@@ -1,0 +1,39 @@
+%% Adapted from csplain 23 Apr. 1997
+%% http://home.zcu.cz/~valtri/dtp/tex2e/share/texmf/tex/
+%%
+%% Luciano R Silveira - 02 Nov. 2014
+
+\input plain
+
+% USenglish hyphenation patterns and hyphenation exceptions
+
+\newcount\USenglish  \USenglish=0
+
+\begingroup          \language=\USenglish
+%\input hyphen.tex \relax   % read by plain.tex
+\input macros/hyphen.ex \relax
+\endgroup
+
+% Portuguese hyphenation patterns in ISO-8859-2
+
+\chardef\iltwoport=7
+\newcount\port     \port=\iltwoport
+
+\begingroup          \language=\port
+\message{Loading Portuguese patterns in ISO-8859-2 encoding, 
+         \string\language=\the\language.}
+\let\global=\relax
+\input macros/pt8hyph2.tex \relax
+\endgroup
+
+\def\ehyph{\language=\USenglish \lccode`\'=0        \nonfrenchspacing
+        \lefthyphenmin=2       \righthyphenmin=3
+        \message{English hyphenation used (\string\language=\the\language).
+                 \string\nonfrenchspacing\space is set on.}}
+
+\def\pthyph{\language=\port       \lccode`\'=`\'      \frenchspacing
+        \lefthyphenmin=2       \righthyphenmin=3
+        \message{Portuguese hyphenation used (\string\language=\the\language).
+                    \string\frenchspacing\space is set on.}}
+
+\dump

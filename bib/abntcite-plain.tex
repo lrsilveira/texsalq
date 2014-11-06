@@ -1,0 +1,566 @@
+%% abntcite version for plain TeX
+%% Luciano R Silveira - 26/05/2014
+%% lrsilveira@gmail.com
+%%
+%% This macro is based on main requirements of the packages abntex2cite.sty (by Lauro Cesar Araujo) and abntcite.sty (by Gerald Weber)
+
+%%%%%%  Options Declaration  %%%%%%
+
+%----------------------------------------------------------------
+%% From eplain.tex
+
+\catcode`@=11
+
+\let\for = \@for
+\def\@nnil{\@nil}%
+\def\@fornoop#1\@@#2#3{}%
+\def\@for#1:=#2\do#3{%
+   \edef\@fortmp{#2}%
+   \ifx\@fortmp\empty \else
+      \expandafter\@forloop#2,\@nil,\@nil\@@#1{#3}%
+   \fi
+}%
+\def\@forloop#1,#2,#3\@@#4#5{\def#4{#1}\ifx #4\@nnil \else
+       #5\def#4{#2}\ifx #4\@nnil \else#5\@iforloop #3\@@#4{#5}\fi\fi
+}%
+\def\@iforloop#1,#2\@@#3#4{\def#3{#1}\ifx #3\@nnil
+       \let\@nextwhile=\@fornoop \else
+      #4\relax\let\@nextwhile=\@iforloop\fi\@nextwhile#2\@@#3{#4}%
+}%
+
+%% -----------------------------------
+%%% From latex.ltx -------------------
+
+\long\def\@firstofone#1{#1}
+\newdimen\@savsk
+\newcount\@savsf
+\def\@bsphack{%
+  \relax
+  \ifhmode
+    \@savsk\lastskip
+    \@savsf\spacefactor
+  \fi}
+\def\@esphack{%
+  \relax
+  \ifhmode
+    \spacefactor\@savsf
+    \ifdim\@savsk>\z@
+      \ignorespaces
+    \fi
+  \fi}
+
+\let\@@underline\underline
+\def\underline#1{%
+  \relax
+  \ifmmode\@@underline{#1}%
+  \else $\@@underline{\hbox{#1}}\m@th$\relax\fi}
+
+
+
+%% Redefinicoes gerais OPmac ------------------------------------------------
+
+% Redefinindo \openauxfile
+\newwrite\auxfile                      % AUX file for BibTeX
+\newcount\bibnum                       % the bibitem counter
+%\newtoks\abntnextkey % para armazenar as chaves das referencias
+
+\def\wauxrelax#1#2{}
+\let\waux=\wauxrelax
+
+\def\openauxfile{%
+  \ifx\waux\wauxrelax
+     \immediate\openout\auxfile=\jobname.aux
+     \gdef\waux##1##2{\write\auxfile{\string##1##2}}%
+     \immediate\write\auxfile
+       {\percent\percent\space ABNTeX: AUX file reserved for bibtex only}%
+  \fi
+  \gdef\openauxfile{}%
+}
+% redefinindo writeaux - talvez nem precise redefinir
+\def\writeaux#1{\immediate\waux\citation{{#1}}}
+
+\def\textbf#1{{\bf #1}}
+
+% wbib com a nova funcao Xbibcite
+% Obs: Alem de redefinir Xbib, foi necessario colocar um novo nome. Escolhi Xbibcite
+\def\wbib#1#2#3{\dest[cite:\the\bibnum]%
+   \ifx\wref\wrefrelax\else \immediate\wref\Xbibcite{{#1}{#2}{#3}}\fi}
+
+%%------------------------------------------------
+
+%% Make @ visible
+\catcode`\@=11
+
+% alf, num: main options
+
+\newif\ifABCItextondemand%
+\def\AbntCitetype{num} % default (se \num for declarado ou nao, da no mesmo)
+\ifx\alf\@undefined {} \else % se \alf for declarado
+  \def\AbntCitetype{alf-esalq}
+  \ABCItextondemandtrue%
+\fi%
+
+\def\AbntCitetypeALF{alf-esalq}
+\def\AbntCitetypeNUM{num}
+
+% references on page foot
+\newif\ifABCIfoot%
+\ABCIfootfalse% valores default (se \notfoot for declarado ou nao)
+\ABCItextondemandtrue%
+\ifx\foot\@undefined {} \else %  se \foot for declarado
+  \ABCIfoottrue%
+  \ABCItextondemandfalse%
+\fi
+
+% cite text on demand (defaults depends on foot or not-foot)
+%  (also recall that options are executed in order of definition at
+%    \ProcessOptions) 
+\ifx\loadtextondemand\@undefined {} \else%
+  \ABCItextondemandtrue%
+\fi
+
+\ifx\loadtext\@undefined {} \else%
+  \ABCItextondemandfalse%
+\fi%
+
+% compatibility with old abnt-alf.bst
+\newif\ifABCIcompoldalf%
+\ABCIcompoldalffalse% valor default (se \experimental for declarado ou nao)
+\ifx\alfantigo\@undefined {} \else%
+  \ABCIcompoldalftrue%
+\fi
+
+% biblabel-on-margin
+\newif\ifABCIbibjustif%
+\ABCIbibjustiffalse % valor default (se \bibleftalign for declarado ou nao)
+\ifx\bibjustif\@undefined {} \else%
+  \ABCIbibjustiftrue%
+\fi%
+
+% biblabel-on-margin
+\newif\ifABCIbiblabelonmargin%
+\ABCIbiblabelonmarginfalse% default  (se \biblabelnotonmargin for declarado ou nao)
+\ifx\biblabelonmargin\@undefined {} \else%
+  \ABCIbiblabelonmargintrue%
+\fi%
+
+% \bibliography includes abnt-options automatically unless next option is used
+\newif\ifABCIautoabntoptions%
+\ABCIautoabntoptionstrue% default (se \abntoptionfile for declarado ou nao)
+\ifx\noabntoptionfile\@undefined {} \else%
+  \ABCIautoabntoptionsfalse%
+\fi%
+
+% recuo : compatibility with old norms
+\ifx\bibindent\@undefined
+  \newdimen\bibindent%
+\fi  
+\bibindent=0em
+
+\ifx\recuo\@undefined {} \else% se \recuo for declarado
+  \bibindent=1.8em
+\fi%
+
+% obs: indent eh um identificador do TeX, nao eh aconselhavel o uso como variavel
+% na versao para LaTeX colocam
+
+\long\def\citebrackets#1#2{\def\citeopen{#1}\def\citeclose{#2}}
+\long\def\setcitebrackets{\citebrackets()}
+
+% 10520:2002 now defines only two numerical styles
+\newif\ifABNTovercite%
+\ifx\overcite\@undefined {} \else%
+  \ABNTovercitetrue%
+\fi%
+\ifx\inlinecite\@undefined {} \else%
+  \ABNTovercitefalse%
+\fi%
+
+% \authorcapstyle em versalete (smallcaps) como opcional
+\newif\ifABNTversalete%
+\ABNTversaletefalse
+\ifx\versalete\@undefined {} \else%
+  \ABNTversaletetrue%
+\fi%
+
+% 10520:2002 does not allow (XX) or [XX] for superscript cites
+\newif\ifABNTstrictnumformat%
+
+% Incorpora o arquivo nbr10520-2002.def do abntex1
+% A norma NBR 10520:2002 removeu as opções [] e () para citações
+% em superscrito
+\ifx\AbntCitetype\AbntCitetypeALF
+\else
+\long\def\setcitebrackets{
+  \ifABNTovercite
+    \citebrackets{}{}
+  \else
+    \citebrackets()
+  \fi
+}
+\fi
+
+%
+%  Allocing variables
+%
+
+% used for \@biblabel in num
+\newdimen\minimumbiblabelwidth
+\newdimen\ABCIauxlen
+
+% auxiliar counters used in `sort and group' mechanism
+\newcount\ABCIaux
+\newcount\ABCImax
+
+
+%% Por enquanto, na versao plain tex nao tera essas opcoes
+% suporting options in a keyval style
+% recuo=<length> gives indentation of \bibitem
+% other options: passed thought \citeoption (stored now in \citeoptionlist
+%   and after (in \AtBeginDocument hook) \citeoption will act on it)
+
+% Na versao plain tex nao havera carregamento de pacotes----------------
+% Serao utilizadas outras macros para hyperref e url
+
+%\provideboolean{ABNThyperref}
+
+%\@ifpackageloaded{hyperref}{%
+%\addtociteoptionlist{abnt-url-package=hyperref}
+%\setboolean{ABNThyperref}{true}
+%}{\setboolean{ABNThyperref}{false}}
+
+%\@ifpackageloaded{url}{%
+%\addtociteoptionlist{abnt-url-package=url}
+%\def\UrlLeft{<}
+%\def\UrlRight{>}
+%\urlstyle{same}}
+
+%\provideboolean{ABNTbackref} %By AWSS
+
+%\@ifpackageloaded{backref}{% %By AWSS
+%\setboolean{ABNTbackref}{true} %By AWSS
+%}{\setboolean{ABNTbackref}{false}} %By AWSS
+%%%---------------------------------------------------------------
+
+%\ProcessOptions
+
+% really foot?
+%\ifthenelse{\boolean{ABCIfoot}\and\equal{\AbntCitetype}{num}}
+%  {\setboolean{ABCIfoot}{true}}
+%  {\setboolean{ABCIfoot}{false}}
+\ifABCIfoot
+   \ifx\AbntCitetype\AbntCitetypeNUM
+      \ABCIfoottrue
+   \else
+      \ABCIfootfalse
+   \fi
+\else
+   \ABCIfootfalse
+\fi
+
+% \citeoption - equal to \nocite  (I copied source from \nocite)
+%               but not complains about this option be obviously undefined
+\newif\ifABCIciteoptionwasused%
+\ABCIciteoptionwasusedfalse%
+
+\def\citeoption#1{\@bsphack
+  \openauxfile
+  \@for\@citekey:=#1\do{%
+    % next line eliminates white space before citation name
+    \edef\@citekey{\expandafter\@firstofone\@citekey}%
+    \immediate\waux\citation{{\@citekey}}
+  }%
+  \@esphack%
+  \ABCIciteoptionwasusedtrue%
+}
+
+% The next piece of code looks if bibtexstyle is used or not, and if not,
+% includes the respective style from the abntcite mode (alf or num)
+\newif\ifABCIbibtexstyleused%
+\ABCIbibtexstyleusedfalse%
+
+\def\bibliographystyle#1{%
+   \openauxfile%
+   \immediate\waux\bibstyle{{#1}}
+   \ABCIbibtexstyleusedtrue%
+}
+
+%
+% \bibliography{list of files .bib to be processed by bibTeX}
+%
+%   I had to redefine this command such that abnt-options.bib is
+%   automatically used in case that some \citeoption was given as package
+%   option. An entry
+%      \bibliography{abnt-options,abnt-options,..}
+%   produces an error in bibTeX. So I had to check if user already
+%   includes abnt-options by (him/her)self.
+%
+%   implementation:
+%
+%     \citeoption was used?
+%     If YES, (abnt-options must be given to bibtex!)
+%       checks for abnt-options into parameter given to \bibliography
+%       if present
+%          user have included, so I don't add it once more
+%       not present
+%          I add necessary abnt-options
+%     If NO
+%       no changes to \bibliography
+
+\def\bibliography#1{% **** colocar futuramente \bibliographystyle como segundo parametro de \bibliography. Creio q fica melhor.
+   \openref
+   \openauxfile
+          \ifABCIciteoptionwasused
+             \ifABCIautoabntoptions
+	       % this system of checking is not good...
+               %% Nao vou testar isso. O usuario que faca certo, nao colocando abntex2-options como parametro
+	           \immediate\waux\bibdata{{bib/abntex2-options,#1}}
+               \else
+	           \immediate\waux\bibdata{{#1}}%
+               \fi
+           \else
+	        \immediate\waux\bibdata{{#1}}%
+           \fi
+         \def\citeI[##1]{\writeaux{##1}}\citelist%%
+         \global\let\addcitelist=\writeaux%%
+         \bgroup \readbblfile{\jobname}\egroup %% do opmac
+         \ifABCIbibtexstyleused%
+           {}
+         \else
+           \bibliographystyle{bib/abntex2-plain-\AbntCitetype}
+         \fi
+ }
+
+% relsize used in \authorcapstyle. If package not present, \smaller=\relax
+%\IfFileExists{relsize.sty}
+%  {\RequirePackage{relsize}}
+  {\let\smaller\relax}
+
+%%%%%%%%%%%%%% Style %%%%%%%%%%%%%%%%%
+
+%\newcommand{\authorcapstyle}{\ifthenelse{\boolean{ABNTversalete}}{\smaller}{}}
+\long\def\authorcapstyle{%
+  \ifABNTversalete
+     \smaller
+  \fi}
+
+\let\authorstyle\relax
+\let\yearstyle\relax
+\let\optionaltextstyle\relax
+\let\citenumstyle\relax
+
+\newdimen\biblabelsep
+\biblabelsep=1ex
+
+%%%%%%%%%%%%%%%%%%%%%  Implementation  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% automatic care for commas inside references
+%\providecommand{\ABCIccomma}{}
+\ifx\ABCIccomma\@undefined
+   \long\def\ABCIccomma{}
+\fi
+\long\def\ABCIcitecommadefault{, }%{,\penalty\@m\ }
+\long\def\ABCIcitecomma{\ABCIccomma\let\ABCIccomma\ABCIcitecommadefault}
+\long\def\ABCIinitcitecomma{\def\ABCIccomma{}}
+\long\def\ABCIcitecolondefault{; }%{;\penalty\@m\ }
+
+%\def\printcite#1{\citesep\citelink{#1}{\citelinkA{#1}}\def\citesep{\citeseptype}} % redefinido do OPmac
+\def\printcite#1{\citesep#1\def\citesep{\citeseptype}} %sem hyperlinks por enquanto
+\def\citesep{}
+\def\citeseptype{}
+
+% How \bibitem works?
+%   definition of \bibitem
+%   \def\bibitem{\@ifnextchar[\@lbibitem\@bibitem} % Definido no latex
+
+
+%\ifthenelse{\boolean{ABCIcompoldalf}\and\equal{\AbntCitetype}{alf}}
+\ifABCIcompoldalf  % Verificar... ta tudo igual
+   \ifx\AbntCitetype\AbntCitetypeALF
+
+           \def\bibitemD#1{\par\ifnum\bibnum>0 \bibskip \fi % 
+             \advance\bibnum by1
+             \def\abntnextkey{#1} % acrescentei
+             \noindent \def\tmpb{#1}\wbib{#1}{\the\bibnum}{\the\bibmark}% 
+             \printbib \ignorespaces
+          }
+   \else
+      %if normal mode (non-compatible with old alf)
+       \ifABCIfoot
+        %
+          % foot-num mode
+%          \def\@lbibitem[#1]#2{\gdef\abntnextkey{#2}}
+%          \def\@bibitem#1{\gdef\abntnextkey{#1}}
+        
+        \else
+        %
+           % Do OPmac - acrescentei aqui \def\abntnextkey{#1} pra testar
+           \def\bibitemD#1{\par\ifnum\bibnum>0 \bibskip \fi %
+             \advance\bibnum by1
+             \def\abntnextkey{#1} % acrescentei
+             \noindent \def\tmpb{#1}\wbib{#1}{\the\bibnum}{\the\bibmark}% 
+             \printbib \ignorespaces
+          }
+        
+        \fi
+   \fi
+\else
+      %if normal mode (non-compatible with old alf) %repeticao do bloco acima
+       \ifABCIfoot
+        %
+          % foot-num mode
+%          \def\@lbibitem[#1]#2{\gdef\abntnextkey{#2}}
+%          \def\@bibitem#1{\gdef\abntnextkey{#1}}
+        
+        \else
+        % no momento vai executar esse bloco
+%          \def\@bibitem#1{
+%            \gdef\abntnextkey{#1}
+%            \item%
+%            \advance\bibnum by1 % do OPmac
+%            \immediate\waux\bibcite{{#1}{\the\bibnum}}
+%            \ignorespaces
+           % Do OPmac - acrescentei aqui \def\abntnextkey{#1} pra testar
+           \def\bibitemD#1{\par\ifnum\bibnum>0 \bibskip \fi%
+             \advance\bibnum by1
+             \def\abntnextkey{#1} % acrescentei
+             \noindent \def\tmpb{#1}\wbib{#1}{\the\bibnum}{\the\bibmark}% 
+             \printbib \ignorespaces
+          }
+        
+        \fi
+\fi
+
+%\newcommand{\hiddenbibitem}[2][]{\gdef\abntnextkey{#2}}
+\long\def\hiddenbibitem[#1]#2{\gdef\abntnextkey{#2}} %% funciona sera? Parece q nem eh usado
+%% Talvez apareca no arquivo .bbl, tem q ver
+
+\long\def\abntrefinfo#1#2#3{% no .bbl
+     \immediate\wref\Xbibcite{{\abntnextkey++EXPL}{#1}{}}%
+     \immediate\wref\Xbibcite{{\abntnextkey++IMPL}{#2}{}}%
+     \immediate\wref\Xbibcite{{\abntnextkey++YEAR}{#3}{}}%
+     \ignorespaces% pra nao ficar com espacos adicionais no inicio dos itens
+}%
+
+\long\def\ABCIdemand#1{\expandafter\gdef\csname ABCIdemand@#1\endcsname{}}
+
+% Acho q isso nao faz nada no codigo
+\let\ABCInewblock\newblock
+%\DeclareRobustCommand{\newblock}{\ABCInewblock}
+
+
+%%%%%%%%%%%%%%%%%%%%  abnt-alf  %%%%%%%%%%%%%%%%%%%%%%%
+
+% the next line was before \ifthenelse{\equal{\AbntCitetype}{alf}}
+
+\setcitebrackets
+
+\ifx\AbntCitetype\AbntCitetypeALF % if alf
+
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %
+  %               \cite{list of keys}
+  %
+  %  Implicit citation - author in capital letters and year; 
+  %                       mechanism to deal with repeated names;
+  %
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  
+
+ \def\cite[#1]{{\citeA#1,,,\citeopen\printsavedcites\citeclose}%
+              \let\citeseptype\ABCIcitecolondefault}
+
+ \def\citeA #1#2,{\if#1,\else 
+   \if *#1\addcitelist{*}\expandafter \skiptorelax \fi
+   \isdefined{bib:#1#2}\iftrue \else
+      \addcitelist{#1#2}%
+      \opwarning{The cite [#1#2] unknown. Try to TeX me again}\openref
+      \addto\savedcites{?,}\def\sortcitesA{}\lastcitenum=0
+      \expandafter\gdef\csname bib:#1#2\endcsname {}%
+      \expandafter \skiptorelax \fi
+   \expandafter \ifx \csname bib:#1#2\endcsname \empty
+      \addto\savedcites{?,}\def\sortcitesA{}\lastcitenum=0
+      \expandafter \skiptorelax \fi
+   \def\bibnn##1{}%
+   \if &\csname bib:#1#2\endcsname
+      \addcitelist{#1#2}%
+      \def\bibnn##1##2{##1}%
+      \sxdef{bibC:#1#2}{\csname bibC:#1#2++IMPL\endcsname}%
+      \sxdef{bibD:#1#2}{\csname bibD:#1#2++YEAR\endcsname}%  bib:#1#2++YEAR ele pega o ano
+   \fi
+   \edef\savedcites{\savedcites \csname bibC:#1#2\endcsname{, }\csname bibD:#1#2\endcsname,}%
+   \relax
+   \expandafter\citeA\fi
+ }
+
+
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %
+  %             \citeonline{list of keys}
+  %
+  %  Inline (explicit) citation - author in "inline style" and year; 
+  %                               mechanism to deal with repeated names;
+  %
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ \def\citeonline[#1]{{\citeonlineA#1,,,\printsavedcites}%
+                    \let\citeseptype\ABCIcitecommadefault}
+
+ \def\citeonlineA #1#2,{\if#1,\else 
+   \if *#1\addcitelist{*}\expandafter \skiptorelax \fi
+   \isdefined{bib:#1#2}\iftrue \else
+      \addcitelist{#1#2}%
+      \opwarning{The cite [#1#2] unknown. Try to TeX me again}\openref
+      \addto\savedcites{?,}\def\sortcitesA{}\lastcitenum=0
+      \expandafter\gdef\csname bib:#1#2\endcsname {}%
+      \expandafter \skiptorelax \fi
+   \expandafter \ifx \csname bib:#1#2\endcsname \empty
+      \addto\savedcites{?,}\def\sortcitesA{}\lastcitenum=0
+      \expandafter \skiptorelax \fi
+   \def\bibnn##1{}%
+   \if &\csname bib:#1#2\endcsname
+      \addcitelist{#1#2}%
+      \def\bibnn##1##2{##1}%
+      \sxdef{bibE:#1#2}{\csname bibE:#1#2++EXPL\endcsname}%
+      \sxdef{bibF:#1#2}{\csname bibF:#1#2++YEAR\endcsname}%  bib:#1#2++YEAR ele pega o ano
+   \fi
+   \edef\savedcites{\savedcites {\csname bibE:#1#2\endcsname}{\ \citeopen}\csname bibF:#1#2\endcsname\citeclose,}%
+   \relax
+   \expandafter\citeonlineA\fi
+ }
+
+
+%%%%% Para formatar a impressao no fim %%%%%%%%%%%
+
+\def\printbib{\hangindent=\bibindent%
+   \ifx\citelinkA\empty \noindent%\hskip\iindent \llap{[\the\bibnum] }%
+   \else \noindent \fi
+}
+
+% end alf
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%  abnt-num  %%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%
+
+\else % if not alf,
+
+  \ifABCIfoot
+
+  {}
+
+  \else % if num and NOT foot
+
+  \def\cite#1{{\citeA#1,,,\citeopen\printsavedcites\citeclose}}
+
+  \def\printbib{\hangindent=\iindent
+     \ifx\citelinkA\empty \noindent\hskip\iindent \llap{\the\bibnum }% retirei os [  ]
+     \else \noindent \fi
+  }
+
+
+  \fi
+\fi % end if alf
+   
+

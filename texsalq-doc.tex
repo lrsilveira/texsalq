@@ -1,0 +1,90 @@
+% The documentation of the usage of TeXSALQ -- the template for
+% typessetting thesis by plain\TeX at ESALQ - USP
+% ---------------------------------------------------------------------
+% Luciano R Silveira  Jun.-Jul. 2014
+% lrsilveira@gmail.com
+%
+% Based on ctustyle-doc.tex by Petr Olsak
+
+\input macros/texsalq   % The template is included here.
+
+\worktype [O/PT] % Type: M = master, D = Ph.D., O = other
+                 % / the language: PT = Portuguese, EN = English
+
+\title      {\TeX \kern -.1667em\lower .5ex\hbox{SALQ} -- Instruções de uso: modelo em \TeX{} puro para digitação de dissertações e teses na ESALQ/USP}
+\author     {Luciano Roberto da Silveira / Andre Herman Freire Bezerra}
+\authorinfo {Bacharel em Ciências dos Alimentos / Bacharel em Engenharia Agronômica}
+\city       {Piracicaba}
+\date       {2014}
+\supervisor {Prof. Dr. \bf\uppercase{Nome do Orientador}}  % One or more supervisors
+\workname   {Documentação do modelo desenvolvido em \TeX{} puro para dissertações e teses da ESALQ, baseado no modelo CTUstyle, de Petr Ol\v{s}ák} % Used only if \worktype [O/*] (Other)
+
+            % Title / Subtitle in minor language:
+\titleEN    {\TeX \kern -.1667em\lower .5ex\hbox{SALQ} -- the user manual (the plain\TeX{} template for theses at ESALQ/USP)}
+\titarea    {Ciências}
+\concarea   {Engenharia de Sistemas Agrícolas}
+\pagetwo    {}  % The text printed on the page 2 at the bottom.
+\dedication {      %  Optional. Use main language here
+     Ao passado, \par\vskip 0.3cm
+    ao presente e \par\vskip 0.3cm
+    ao futuro \par\vskip 1.3cm
+    Com amor, \bfit DEDICO\par
+}
+\thanks     {      %  Optional. Use main language here
+    A Jorge Alexandre Wiendl, por nos encorajar na utilização do \TeX{} puro, dando o pontapé inicial e contribuindo com muitas dicas de programação para o modelo criado. O trabalho foi um grande desafio. % No início achamos loucura, mas com a prática, percebemos algumas vantagens sobre o \LaTeX{}, como a redução do número de linhas de código e o controle total de todos os detalhes do documento. O trabalho foi encarado como um grande desafio.
+
+    A Ismael Meurer, o primeiro a utilizar o modelo antes da primeira versão estar concluída, incentivando a continuação do trabalho e relatando as dificuldades iniciais. A ele e ao Fernando Thomazini, também utilizador do modelo, por terem encontrado bugs importantes, corrigidos posteriormente, possibilitando melhoria.
+
+   A Petr Ol\v{s}ák, professor na Universidade Técnica Checa em Praga, autor do conjunto de macros tomadas como base para esse trabalho; pelo pronto e valioso suporte com as macros utilizadas, corrigindo os bugs relatados.
+}
+\epigraph   {       %  Optional. Use main language here
+   {\sl Toda a nossa ci\^encia, comparada com a realidade, \'e primitiva e infantil --- e, no entanto, \'e a coisa mais preciosa que temos.}\par\vskip 1.3cm
+Albert Einstein
+}
+\abstractEN {%
+   This document shows an usage of the plain\TeX{} officially
+   (may be) recommended design style \TeX SALQ for master
+   (Ing.), or doctoral (Ph.D.) theses at the ESALQ/USP. The template
+   defines all thesis mandatory structural elements and
+   typesets their content to fulfil the university formal rules.
+}
+\abstractPT {%
+   Este documento mostra a utilização do modelo \TeX SALQ em \TeX{} puro,
+   (que poderia ser) oficialmente recomendado para dissertações e teses na  ESALQ/USP. O modelo
+    define todos os elementos estruturais obrigatórios em dissertações e teses e
+    edita seu conteúdo para cumprir as regras formais da universidade.
+}
+
+\keywordsEN {%
+   document design template; master, Ph.D. thesis; \TeX{}.
+}
+\keywordsPT {%
+  modelo de documento; dissertação de mestrado; tese de doutorado; \TeX{}.
+}
+
+
+%%%%% <--   % The place for your own macros is here.
+\def\emph#1{{\it #1}}
+\def\ttb{\tt\char`\\} %  sequence control printing of Tables
+\def\asp#1{``#1''} % facilitates the use of quotation marks
+
+%\draft     % Uncomment this if the version of your document is working only.
+%\linespacing=1.7  % uncomment this if you need more spaces between lines
+                   % Warning: this works only when \draft is activated!
+%\savetoner        % Turns off the lightBlue or lightGrey backround of
+                   % verbatims, only for \draft version.
+%\blackwhite       % Use this if you need really Black+White thesis.
+
+\makefront  % Mandatory command. Makes title page, acknowledgment, contents etc.
+
+% Files where the source of the document is prepared.
+% Full name is: body.tex, appendicies.tex, the suffix can be omitted.
+
+%\input epsf % Works onty if pdfoutput = 0
+\input body
+
+{\makebib{mybib}}
+
+\input appendicies
+
+\bye

@@ -1,0 +1,1000 @@
+% texsalq.tex -- the template for typesetting theses at ESALQ - USP - Piracicaba
+%---------------------------------------------------------------------
+% Luciano R Silveira  Jul. 2014
+%
+% Note: This template was based on ctustyle.tex -- the template for typesetting theses at CTU in Prague, by Petr Olsak
+
+\def\esalqstyleversion{beta(b) Out. 2014}
+
+\message{TeXSALQ: Dissertacoes e teses na ESALQ - USP, 
+         v. <\esalqstyleversion>}
+
+%%% Testing versions of opmac
+
+\def\esalqstyleERR#1{\message{ERROR -- #1.}\expandafter\end}
+
+\ifx\pdfoutput\undefined
+   \esalqstyleERR {pdfTeX isn't detected, use ``pdftex \jobname'' command}%
+\fi
+\pdfoutput=1
+
+%\def\tmp#1#2\end{\if$#2$\else 
+%   \esalqstyleERR {csplain doesn't read UTF-8 encoding, may be it is an old version}\fi}%
+%\tmp ƒç\end
+
+\newread\testinput
+\def\testfile#1#2{\openin\testinput=#1
+   \ifeof\testinput \esalqstyleERR {#1 not found, install it from #2}\fi
+   \closein\testinput
+}
+\testfile{macros/opmac.tex}{petr.olsak.net/opmac.html}
+%\testfile{macros/ams-math.tex}{petr.olsak.net/opmac.html}
+%\testfile{lmfonts.tex}{petr.olsak.net/csplain.html}
+
+\def\totlist{} \def\toflist{}  % List of tables and figures
+
+\def\Xseccc#1#2#3{\addto\toclist{\tocline{0}{\rm}{#1}{#2}{#3}}} % Third level sections
+\def\Xtab#1#2#3{\addto\totlist{\totline{#1}{#2}{#3}{t}}}
+\def\Xfig#1#2#3{\addto\toflist{\tofline{#1}{#2}{#3}{f}}}
+
+% Redefinicao da funcao Xbib do OPmac, com um novo nome.
+%Deve ser declarada antes do input, senao nao funciona corretamente
+\def\Xbibcite#1#2#3{\sdef{bib:#1}{\bibnn{#2}&}
+                    \sdef{bibC:#1}{\bibnn{#2}&}
+                    \sdef{bibD:#1}{\bibnn{#2}&}
+                    \sdef{bibE:#1}{\bibnn{#2}&}
+                    \sdef{bibF:#1}{\bibnn{#2}&}
+                    \if^#3^\else\sdef{bim:#2}{#3}\fi\def\lastbibnum{#2}}
+\let\normalmath\relax % pro opmac nao carregar o ams-math
+
+\let\regfont\relax % pro opmac nao carregar a fonte csbxti10
+% O bloco abaixo deve ser mantido. Definicoes necessarias devido ao nao carregamento da fonte tcheca csbxti10 do opmac.
+\def\letfont#1#2{\ifx#2=\expandafter\letfont\expandafter#1\else
+  \expandafter\font\expandafter#1\expandafter\rfontskipat\fontname#2 \relax\space \fi}
+\def\rfontskipat#1{\ifx#1"\expandafter\rfskipatX\else\expandafter\rfskipatN\expandafter#1\fi}
+\def\rfskipatX #1" #2\relax{"\whichtfm{#1}"}  \def\rfskipatN #1 #2\relax{\whichtfm{#1}}
+\def\sizespec{}   \def\whichtfm#1{#1}
+\def\resizefont#1{\letfont#1#1\sizespec}
+
+\input macros/opmac
+
+
+\ifx\remskip\undefined
+   \esalqstyleERR {OPmac older than Jun. 2013. Upgrade from petr.olsak.net/opmac.html}%
+\fi
+
+%%% Useful Macros
+
+\def \newpage {%
+  \par%
+  \vfil%
+  \break}
+
+\def\cleardoublepage{\newpage\ifodd\pageno\else% se for impar nao faz nada
+                     \null\newpage\fi}% ou \hbox{}\newpage, 'a moda LaTeX
+
+% Implementacao de \settodim do LaTeX (convertendo p plain TeX) 
+% \settowidth armazena em \mylen o comprimento de um texto
+\newbox\tempboxa \newdimen\mylen
+\def\settodim#1#2#3{%
+   \setbox\tempboxa\hbox{{#3}}% Nao sei muda hbox pra vbox para \dp e \ht
+   \global#2=#1\tempboxa%
+%   \leavevmode% in case it's the first thing in a paragraph
+ %  \box\tempboxa% serve para manter o texto no pdf. Aqui no caso nao eh necessario
+}
+\def\settoheight#1#2{\settodim{\ht}{#1}{#2}}
+\def\settodepth#1#2{\settodim{\dp}{#1}{#2}}
+\def\settowidth#1#2{\settodim{\wd}{#1}{#2}}
+
+%Uma implementacao de \contentspush do pkg titlesec do LaTeX (nao esta igual)
+\def\contentspush#1{%
+%  \bgroup
+  \settowidth{\mylen}{#1}
+  \advance\leftskip\the\mylen%
+  \par\noindent
+  \leavevmode\llap{#1}\ignorespaces
+%  #2\par\egroup
+}
+% Uma outra versao mais enxuta, faz a mesma coisa que o \contentspush, mas usa o parindent
+\def\ctpush#1{%
+%  \bgroup
+  \settowidth{\mylen}{#1\enspace} % width with \enspace, because the \item macro add a \enspace
+  \parindent=\mylen
+  \item{#1}
+  %#2\par\egroup
+} %obs: contentspush nao foi usado diretamente aqui
+
+\def\nohyphens{\pretolerance=9999 \tolerance=9999
+               \hyphenpenalty=9999 \exhyphenpenalty=9999\relax} % para nao hifenizar
+% Ha outros meios de controlar hifenizacao:
+% http://tex.stackexchange.com/questions/31301/how-to-reduce-the-number-of-hyphenation
+
+%\newskip\flushglue \flushglue = 0pt plus 1fil %0pt plus4em
+\newskip\flushgluel \flushgluel=0pt plus 1fil%
+\newskip\flushgluer \flushgluer=0pt plus 1fil% Para ter controle independente
+
+\def\raggedcenter{\leftskip=\flushgluel \rightskip=\flushgluer%
+  \parfillskip=0pt \spaceskip=.3333em \xspaceskip=.5em
+  \parindent=0pt \nohyphens}
+%http://tex.stackexchange.com/questions/45783/how-can-i-break-the-rows-of-an-halign-nicely-across-pages
+%http://tug.org/pipermail/texhax/2009-February/011836.html
+% latex.ltx file
+
+\def\raggedleft{\leftskip=\flushgluel \rightskip=0pt%
+  \parfillskip=0pt \spaceskip=.3333em \xspaceskip=.5em%
+  \parindent=1.5cm \nohyphens} % adaptei
+% outras ideias de ragged: http://mirror.unl.edu/ctan/macros/plain/contrib/tugboat/tugboat.cmn
+
+
+% Livro do Knut p. 311
+%\def\frac#1/#2{\leavevmode\kern.1em
+\def\frac#1/#2 {\leavevmode\kern.1em
+\raise.5ex\hbox{\the\scriptfont0 #1}\kern-.1em
+%/\kern-.15em\lower.25ex\hbox{\the\scriptfont0 #2}}
+/\mkern-1mu\hbox{\the\scriptfont0 #2}} % same that nicefrac LaTeX Package
+
+% Sample usage: $\frac1/4 $
+
+
+%%% Declaration commands:
+
+\newtoks\title
+\newtoks\author
+\newtoks\supervisor   \let\supervisors=\supervisor
+\newtoks\city
+\newtoks\date
+\newtoks\titarea
+\newtoks\concarea
+\newtoks\authorinfo
+\newtoks\workname
+\newtoks\pagetwo
+\newtoks\titleEN     \newtoks\titlePT
+\newtoks\abstractEN  \newtoks\abstractPT
+\newtoks\keywordsEN  \newtoks\keywordsPT
+\newtoks\dedication
+\newtoks\thanks
+\newtoks\epigraph
+
+%%% Mandatory declaration commands
+
+\def\mandatorydecl#1{\if&\the#1&%
+   \esalqstyleERR {the mandatory item \string#1 is undeclared or empty}%
+   \fi
+}
+\def\makefront{%
+   \ifx\mainlanguage\undefined
+      \esalqstyleERR {The \string\worktype[<type>/<lang>] command 
+                    is missing before \string\makefront}\fi
+   \everypar={}
+   \mandatorydecl\title
+   \mandatorydecl\author
+   \mandatorydecl\date
+   \mandatorydecl\supervisor 
+   \ifnum\worktypenum>0
+      \mandatorydecl\abstractEN
+%      \def\tmp{EN}\ifx\mainlanguage\tmp
+%         \if&\the\abstractSK&\mandatorydecl\abstractCZ \fi
+%      \fi
+      \def\tmp{PT}\ifx\mainlanguage\tmp \mandatorydecl\abstractPT \fi
+      \mandatorydecl\titarea
+      \mandatorydecl\concarea
+   \else \mandatorydecl\workname
+   \fi
+}
+
+\everypar={\normaltypingdenied}
+
+\def\normaltypingdenied{%
+   \esalqstyleERR{Text outside parameters on line \the\inputlineno.
+                Use \noexpand\makefront first}\relax}
+
+
+%%% Automatically generated multilingual texts:
+
+\sdef{mt:chap:pt}{Cap{\'\i}tulo}
+\sdef{mt:t:pt}{Tabela}
+\sdef{mt:f:pt}{Figura}
+
+\sdef{lan:7}{pt}  \sdef{lan:17}{pt}  \sdef{lan:117}{pt}
+
+\def\slet#1#2{\expandafter\let\csname#1\expandafter\endcsname\csname#2\endcsname}
+\def\mtdef#1#2#3#4{\sdef{mt:#1:en}{#2} \sdef{mt:#1:\pt}{#3}
+  \if$#4$\slet{mt:#1:sk}{mt:#1:\pt}
+  \else  \sdef{mt:#1:sk}{#4}
+  \fi
+}
+\edef\pt{\csname lan:7\endcsname}
+
+\mtdef {usp}   {University of S„o Paulo} 
+               {Universidade de S„o Paulo} {} 
+
+\mtdef {esalq}    {``Luiz de Queiroz'' College of Agriculture}
+                  {Escola Superior de Agricultura ``Luiz de Queiroz''} {}
+
+\mtdef {abstract}     {ABSTRACT}          {RESUMO}           {}
+\mtdef {thanks}       {ACKNOWLEDGEMENT}   {AGRADECIMENTOS}   {} 
+%\mtdef {keywords}     {Keywords}          {Palavras-chave}   {}
+\mtdef {contents}     {CONTENTS}          {SUM¡RIO}          {}
+\mtdef {tables}       {LIST OF TABLES}    {LISTA DE TABELAS} {}
+\mtdef {figures}      {LIST OF FIGURES}   {LISTA DE FIGURAS} {}
+\mtdef {supervisor}   {Supervisor}        {Orientador}       {}
+\mtdef {bibliography} {REFERENCES}        {REFER NCIAS}      {}
+\mtdef {appendix}     {APPENDIX}          {AP NDICE}         {}  
+\mtdef {appendixpl}   {APPENDIXES}        {AP NDICES}        {}
+%\mtdef {gradem}       {Master}            {Mestre}           {}
+%\mtdef {graded}       {Ph.D.}             {Doutor}           {}
+
+\mtdef {M} {Thesis submitted in partial fulfillment of requirements for the degree of Master in \the\titarea. Area of concentration: \the\concarea}   
+           {DissertaÁ„o apresentada para obtenÁ„o do tÌtulo de Mestre em \the\titarea. ¡rea de concentraÁ„o: \the\concarea}   {}
+\mtdef {D} {Thesis submitted in partial fulfillment of requirements for the degree of Doctor in \the\titarea. Area of concentration: \the\concarea}     
+           {Tese apresentada para obtenÁ„o do tÌtulo de Doutor em \the\titarea. ¡rea de concentraÁ„o: \the\concarea}   {}
+
+%\def\keepacc#1{\slet{mt:#10:sk}{mt:#1:sk}\slet{mt:#10:\pt}{mt:#1:\pt}}
+%\def\keepaccents{\keepacc{thanks}%
+%  \keepacc{declaration}\keepacc{figures}\keepacc{specifi}}
+
+
+%%% Worktype
+
+\def\worktype[#1/#2]{%
+   \isdefined{wt:#1}\iftrue \csname wt:#1\endcsname \relax
+      \else \esalqstyleERR {Unknown \noexpand\worktype parameter}\fi
+   \isdefined{wl:#2}\iftrue \csname wl:#2\endcsname \relax
+      \else \esalqstyleERR {Unknown \noexpand\worktype parameter}\fi
+}
+\sdef{wt:O}{\chardef\worktypenum=0}
+\sdef{wt:M}{\chardef\worktypenum=1}
+\sdef{wt:D}{\chardef\worktypenum=2}
+
+\sdef{wl:EN}{\def\mainlanguage{EN}\ehyph}
+\sdef{wl:PT}{\def\mainlanguage{PT}\pthyph}
+
+%%% Fonts
+
+\let\LMTone\relax % If in english, change to CMTone
+\input macros/fontch_fixed
+
+%--- Espacamento entre linhas nas fontes -----------------
+%--- Medidas analisadas do MS Word
+%
+%-----Fonte 10
+\def\tensingle{\baselineskip 11.50pt}
+\def\tenonehalf{\baselineskip 17.32pt}
+\def\tendouble{\baselineskip 23.14pt}
+
+% --- Fonte 12
+\def\twelvesingle{\baselineskip 13.84pt}
+\def\twelveonehalf{\baselineskip 20.84pt}
+\def\twelvedouble{\baselineskip 27.72pt}
+
+% Italico negrito tamanho 12 (nao e' definido na macro fontch.tex)
+\font\twelvebfit=cmbxti10 scaled 1200
+\let\bfit=\twelvebfit
+
+% -----------------------------------------------
+%% Definicao da fonte italica para indices no modo matematico,
+%%  relativo a fontes no tamanho 12 ---
+%\font\eightit=ec-lmri8  % Ja definido na macro fontch.tex
+\font\sixit=ec-lmri7 at 6pt
+\scriptfont\itfam=\eightit
+\scriptscriptfont\itfam=\sixit
+
+%%% Colors
+
+\def\Orange{\setcmykcolor{0 0.5 1 0}}
+\def\Blue{\setcmykcolor{1 .43 0 0}}
+\def\liBlue{\setcmykcolor{.2 .08 0 0}}
+\def\liGrey{\setcmykcolor{0 0 0 0.13}}
+\let\nBlue=\Blue 
+
+\def\blackwhite{\let\Blue=\Grey \let\nBlue=\Black \let\Red=\Grey \let\liBlue=\liGrey}
+\let\trysavetoner=\relax
+
+\def\savetoner{\def\trysavetoner{%
+  \ifx\drafttext\empty
+     \message{WARNING: final (not \string\draft) version,
+              \noexpand\savetoner ignored}
+  \else
+     \let\liBlue=\White
+     \let\liGrey=\White % added 2014-11-02
+  \fi 
+}}
+
+\hyperlinks{\Black}{\Black}
+\def\tocborder{1 .8 0} 
+\let\pgborder\tocborder
+\let\citeborder\tocborder
+\let\refborder\tocborder
+\let\urlborder\tocborder
+
+\ifx\localcolor\undefined  \let\locc=\relax \else \let\locc=\localcolor \fi
+
+
+%%% Typesetting area
+
+%\margins/pg fmt (left,right,top,bot)unit
+\margins/2 a4 (30,20,30,20)mm % set margins
+                              % for A4 paper
+
+% Comportamento do texto na pagina, etc. Quase equivalente ao Sloppy no LaTeX.
+\tolerance 1414  
+\hbadness 1414   
+\emergencystretch 2em %do opmac-d
+\hfuzz 0.3pt    
+\vfuzz \hfuzz   
+%site: http://www.latex-community.org/forum/viewtopic.php?f=19&t=21170
+
+\parindent 1.5cm \iindent=\parindent %iindent controla indentacao de itens, sumario, etc.
+
+\let\firstnoindent=\relax %indenta sempre o primeiro paragrafo
+
+\raggedbottom
+
+%\nopagenumbers  % para nao colocar o numero da pagina no rodape, quando footline nao esta definido
+
+\def\makeheadline{\vbox to0pt{\vskip-34pt
+  \line{\vbox to10pt{}\the\headline}\vss}\nointerlineskip}
+\def\makefootline{\baselineskip=34pt \lineskiplimit=0pt \line{\the\footline}}
+
+\def\picdir{figuras/} % the directory with picture files
+
+%%% Draft
+
+{\tt\thefontsize[10] \global\let\ttt=\thefont}
+
+\def\drafttext{}
+\def\draft{\let\destbox=\draftdestbox 
+     \def\drafttext{\vbox to0pt{\vss \llap{   
+     \Grey \bf\thefontsize[11] Rascunho: \the\day. \the\month.
+     \the\year\Black}}}}
+
+\def\linespacing=#1#2 {\def\thelinespacing{#1#2}}  
+\linespacing=1
+
+\def\setlinespacing{%
+   \ifdim\thelinespacing pt=1pt \else
+      \ifx\drafttext\empty 
+            \message{WARNING: final (not \string\draft) version, 
+                     \noexpand\linespacing ignored}
+         \else
+            \baselineskip=\thelinespacing\baselineskip
+      \fi 
+   \fi
+}
+\def\draftdestbox[#1#2:#3]{\vbox to0pt{\kern-\destheight
+   \pdfdest name{#1#2:#3} xyz\relax
+   \if#1r\llap{\locc\Red\ttt[\ignoretocolon\csname lab:#3\endcsname]}\vss
+   \else \if#1c\vss\llap{\locc\Red\ttt[\ignoretocolon\csname bib:\tmpb\endcsname] }\kern-\prevdepth
+   \else \vss \fi\fi}}
+\def\ignoretocolonA#1:{}
+\def\ignoretocolon{\expandafter\expandafter\expandafter\ignoretocolonA\expandafter\string}
+
+%%% PDF info data
+
+\def\pdfinfodata{%
+   {\def\TeX{TeX}\def\nl{ }%
+    \ifx\pdfunidef\undefined
+       \edef\tmp{/Author(\the\author)
+            /CreationDate(\the\date)
+            /Creator(TeX + ESALQstyle)
+            /Title(\the\title)
+            /Subject(\ifcase\worktypenum
+                \the\workname \or \mtext{M}\or \mtext{D}\fi)
+            /Keywords(\the\keywordsEN)}
+%       \edef\toasciidata{\toasciidata}\expandafter \setlccodes \toasciidata{}{}%
+%       \lowercase\expandafter{\expandafter\def\expandafter\tmp\expandafter{\tmp}}%
+    \else
+       \pdfunidef\tmpb{\the\author}\edef\tmp{/Author(\tmpb) /CreationDate(\the\date) }%
+       \pdfunidef\tmpb{\the\title}%
+       \edef\tmp{\tmp /Creator(TeX + ESALQstyle) /Title(\tmpb) }%
+       \pdfunidef\tmpb{\ifcase\worktypenum
+                \the\workname \or \mtext{M}\or \mtext{D}\fi}%
+       \edef\tmp{\tmp /Subject(\tmpb) /Keywords(\the\keywordsEN)}%
+    \fi
+    \pdfinfo{\tmp}}
+    \ifx\pdfunidef\undefined\else \keepaccents
+       \let\insertoutlineI=\insertoutline
+       \def\insertoutline##1{\pdfunidef\tmp{##1}\insertoutlineI{\tmp}}
+    \fi
+}
+\addto\makefront{\pdfinfodata}
+
+%%% Title page (cover) (Capa)
+
+\def\titlepageA{\fourteenpoint\bf
+               \baselineskip=17pt
+               %\Blue
+               \centerline{\mtext{usp}}\par
+               \centerline{\mtext{esalq}}\par
+               \vskip 5cm
+               {\raggedcenter{\the\title}\par}
+               \vskip 5cm
+               \centerline{\the\author}\par
+               \vskip 3cm
+               \bgroup
+                 \leftskip 7.8cm% 10.8 - 3
+                 \tenpoint\noindent
+                 \ifnum\worktypenum=0 \the\workname%
+                 \else
+                    \ifcase\worktypenum
+                    \relax \or \mtext{M}\or \mtext{D}\fi
+                 \fi
+                 \par
+               \egroup
+               \vfill
+               \centerline{\the\city}
+               \centerline{\the\date}
+}
+\addto\makefront{%
+   \bgroup \hbadness=4000 
+   \pageno=-1 %\def\advancepageno{\global\advance\pageno by-1 }
+   \footline={\hss\drafttext} \titlepageA \vfil\break
+}
+
+%%% Title page (folha de rosto)
+
+\def\titlepageB{\twelvepoint
+               \centerline{\the\author}\par
+               \centerline{\the\authorinfo}\par
+               \vskip 5cm
+               {\raggedcenter{\bf \the\title}\par}
+               \vskip 3.5cm
+               \bgroup
+                 \leftskip 8.26cm % 10.8 - 2.54
+                 \tenpoint\noindent
+                 \mtext{supervisor}:\par\noindent
+		 %\mtext{supervisorD} {\bf \uppercase\expandafter{\the\supervisor}}
+                 {\the\supervisor}
+                 \vskip 3.5cm \noindent
+                 \ifnum\worktypenum=0 \the\workname%
+                 \else
+                    \ifcase\worktypenum
+                    \relax \or \mtext{M}\or \mtext{D}\fi
+                 \fi
+                 \par
+               \egroup
+               \vfill
+               \centerline{\bf \the\city}
+               \centerline{\bf \the\date}
+}
+\addto\makefront{%
+   \pageno=-\pageno \advance\pageno by-1
+   \pdfcatalog{/PageLabels<</Nums[0<</S/r>>\the\pageno<</S/D>>]>>}
+   \egroup  % Ate aqui nao conta as paginas em arabico
+   \pageno=1 \def\advancepageno{\global\advance\pageno by1 }
+   \footline={\hss\drafttext}
+   \titlepageB \vfil\break
+}
+
+%%% Page Two
+
+\def\printpagetwo{\null\vskip0pt plus1fil {\parindent=0pt \the\pagetwo\endgraf}}
+\addto\makefront{\printpagetwo \endgraf\break} 
+
+
+%%% Headline definition
+
+\addto\makefront{%
+\headline={\ifodd\pageno \hfil\twelverm\folio % se for impar joga pra direita
+           \else \twelverm\folio\hfil  % se for par joga pra esquerda
+           \fi}
+}
+
+%%% Dedication page (DedicatÛria) (Opcional)
+
+\def\dedicpage{\bgroup\twelvepoint\it
+               \twelveonehalf
+               \line{}\vskip 1cm
+               {\flushgluel=150pt plus4em \raggedleft{\the\dedication}\par}
+               \egroup
+}
+\addto\makefront{%
+   \if&\the\dedication&\else%
+     \dedicpage \vfil\break\fi
+}
+
+
+%%% Thanks page (Optional)
+
+\def\thankspage{\twelvepoint\twelveonehalf
+                \centerline{\bf \mtext{thanks}}
+                \vskip 1.5cm
+                \the\thanks\par
+}
+\addto\makefront{%
+   \if&\the\thanks&\else%
+     \cleardoublepage\thankspage \vfil\break\fi
+}
+
+%%% Epigraph page (Optional)
+
+\def\epigraphpage{\twelvepoint\twelveonehalf
+                  \vskip 1cm
+                  {\flushgluel=150pt plus4em \raggedleft{\the\epigraph}\par}
+}
+\addto\makefront{%
+\if&\the\epigraph&\else%
+   \cleardoublepage\epigraphpage \vfil\break\fi
+}
+
+%%% Contents
+
+\def\tocline#1#2#3#4#5{{\rightskip=2\iindent
+   \toclinehook \noindent %\llap{#2\toclink{#3}\enspace}%
+      {\if&#3&\else\rm\toclink{#3}\enspace\fi}%
+         {\rm#4\unskip}\nobreak\tocdotfill\pglink{#5}\nobreak\hskip-2\iindent\null\par}}%
+
+\def\tocpages{\twelvepoint\twelveonehalf
+   \centerline{\bf \mtext{contents}}
+   \bigskip
+   \maketoc
+}
+\addto\makefront{%
+   \cleardoublepage\tocpages \vfil\break
+}
+
+%%% Abstract
+
+\def\abstractpagePT{%
+   {\twelvepoint\twelvesingle
+   \pthyph
+   \nonum\chap RESUMO\par
+   \bigskip
+   {\raggedcenter{\bf\the\titlePT}\par}
+   \bigskip\noindent
+   \the\abstractPT\par
+   \bigskip\noindent
+   Palavras-chave: \the\keywordsPT\par}
+}
+\def\abstractpageEN{%
+   {\twelvepoint\twelvesingle
+   \ehyph
+   \nonum\chap ABSTRACT\par
+   \bigskip
+   {\raggedcenter{\bf\the\titleEN}\par}
+   \bigskip\noindent
+   \the\abstractEN\par
+   \bigskip\noindent
+   Keywords: \the\keywordsEN\par}
+}
+
+\addto\makefront{%
+   \def\tmp{PT}\ifx\mainlanguage\tmp
+     \let\titlePT=\title%
+     \cleardoublepage\abstractpagePT
+     \cleardoublepage\abstractpageEN \vfil\break
+   \else
+     \let\titleEN=\title%
+     \cleardoublepage\abstractpageEN
+     \cleardoublepage\abstractpagePT \vfil\break
+   \fi
+}
+
+%%% Figures / Tables
+
+\def\tofpages{
+   \twelveonehalf%
+   \nonum\chap \mtext{figures}\par
+   \bigskip
+   \maketof
+   \par
+}
+\addto\makefront{%
+     \cleardoublepage\tofpages \vfil\break %comentar essa linha se nao houver figuras
+}
+\def\totpages{
+   \twelveonehalf%
+   \nonum\chap \mtext{tables}\par
+   \bigskip
+   \maketot
+   \par
+}
+\addto\makefront{%
+     \cleardoublepage\totpages \vfil\break %comentar essa linha se nao houver tabelas
+}
+
+%%% Typessetting of the document:
+
+\addto\makefront{%
+   \twelvepoint\twelveonehalf
+   \setlinespacing
+   \trysavetoner
+   \pdfcatalog{/PageMode /UseOutlines}
+}
+
+%%% Chapter, section
+
+\def\titfont{\fourteenpoint\bf\baselineskip 27pt minus 1pt}
+\def\chapfont{\twelvepoint\bf\baselineskip 27pt minus 1pt}
+\def\secfont{\twelvepoint\bf\baselineskip 27pt minus 1pt}
+\def\seccfont{\twelvepoint\bf\baselineskip 27pt minus 1pt}
+\def\secccfont{\twelvepoint\bf\baselineskip 27pt minus 1pt}
+
+\def\dotocnum#1{%
+  \leavevmode 
+     {\ifnonum \global\advance\nonumnum by1 \edef\thetocnum{}\fi
+      \wlabel\thetocnum \dest[toc:\thetocnum]%
+      \dotocnumafter}\ifnonum\else#1\fi
+  \global\let\dotocnumafter=\relax
+}
+
+\def\printchap#1{\par \norempenalty-400 \bigskip
+  {\chapfont \noindent 
+   \ifnonum
+      {\dotocnum{}{\raggedcenter{#1}\nbpar}}
+    \else
+      \dotocnum{\thetocnum\quad}#1\nbpar\fi}%
+    \mark{}%
+  \nobreak \remskip\bigskipamount \firstnoindent
+}
+\def\printsec#1{\par \norempenalty-400 \bigskip
+  {\secfont \noindent 
+   \ifnonum
+      {\dotocnum{}{\raggedcenter{#1}\nbpar}}
+    \else
+      \dotocnum{\thetocnum\quad}#1\nbpar\fi}
+    \insertmark{#1}%
+  \nobreak \remskip\medskipamount \firstnoindent
+}
+
+\newcount\secccnum
+
+\def\chaphook#1\relax{\secnum=0 \seccnum=0 \secccnum=0 \relax}
+\def\sechook#1\relax{\seccnum=0 \relax}
+
+\def\printseccc#1{\par \norempenalty-200 \medskip
+  {\secccfont \noindent \dotocnum{\thetocnum\quad}#1\nbpar}%
+  \nobreak \remskip\medskipamount \firstnoindent
+}
+\def\seccc#1\par{\ifnonum\else \global\advance\secccnum by1 \fi
+  \edef\thesecccnum{\othe\chapnum.\the\secnum.\the\seccnum.\the\secccnum}\let\thetocnum=\thesecccnum
+  \def\dotocnumafter{\wcontents\Xseccc{#1}}%
+  \printseccc{#1\unskip}\resetnonumnotoc
+}
+
+%% Adicionado na versao beta(x) May 2014 do CTUstyle 
+\def\begitemstest#1{\ifnum\catcode`\*=13
+   \message{WARNING: \string#1 used in \string\begitems...\noexpand\enditems
+            environment (line: \the\inputlineno)}\fi}%
+
+%%% Appendicies
+
+\def\appendixpage{%
+    \cleardoublepage
+	  \bgroup
+	       \null\vfil
+               {\nonum\chap \mtext{appendixpl}\par}
+	       \vfil
+	  \par\egroup
+    \cleardoublepage
+}%
+
+\newcount\appnum
+\def\appletter{\ifcase\appnum ?\or A\or B\or C\or D\or E\or F\or G\or H\or
+   I\or J\or K\or L\or M\or N\or O\or P\or Q\or R\or S\or T\or U\or V\or
+   W\or X\or Y\or Z\else ?\fi}
+
+\def\app#1\par{\global\advance\appnum by1
+  \ifx\chap\nochap \else \nextoddpage \global\let\chap=\nochap \fi
+  \secnum=0 \seccnum=0 \relax
+  \edef\theappnum{\appletter}\let\thechapnum=\theappnum \let\thetocnum=\theappnum
+  \gdef\sechook ##1\def{\global\seccnum=0 
+       \edef\thesecnum{\theappnum.\the\secnum}\let\thetocnum=\thesecnum
+       \def}%
+  \gdef\secchook ##1\def{%
+       \edef\theseccnum{\theappnum.\the\secnum.\the\seccnum}\let\thetocnum=\theseccnum
+       \def}%
+  \def\dotocnumafter{\wcontents\Xchap{#1}}% 
+  \printapp{#1\unskip}%
+  \nobreak
+}
+\def\nochap#1\par{\message{CTUstyle WARNING: \noexpand\chap inside
+                           Appendices is ignored.}}
+
+\def\printapp#1{%
+     \bgroup%\begitemstest\app%
+     \tenpoint\tensingle \noindent%
+     \settowidth{\mylen}{\mtext{appendix}\ \theappnum\ -\enspace}%
+     \leftskip=\mylen%
+     \printcaption{\mtext{appendix}}{\theappnum}#1\par\nobreak\egroup%
+     \wlabel\theappnum% para poder usar \label
+  \bigskip%
+  \firstnoindent%
+}
+
+\def\bibchap{{\flushgluel=0pt \nonum \chap \mtext{bibliography}\par}}
+
+%%% Captions
+
+\def\thetnum{\the\tnum}
+\def\thefnum{\the\fnum}
+
+\def\caption/#1 #2{\isdefined{#1num}%
+   \iftrue \global\advance \csname #1num\endcsname by1%
+   \else   \opwarning{Unknown caption /#1}%
+   \fi%
+   \bgroup
+      \leftskip=\iindent plus1fil
+    %  \rightskip=\iindent plus-1fil  %recuo a direita. Acho que as normas da ESALQ nao pode ter esse recuo
+      \parfillskip=0pt plus2fil
+      \def\par{\endgraf\egroup}%
+      \captionhook{#1}{#2}\noindent 
+      \wlabel{\csname the#1num\endcsname}%
+      \printcaption{\mtext{#1}}{\csname the#1num\endcsname}#2\par%
+}
+
+\def\captionhook#1#2{%
+   \tenpoint\tensingle%
+   \settowidth{\mylen}{\mtext{#1}\ {\csname the#1num\endcsname}\ -\enspace}
+   \leftskip=\mylen %
+%   \ifx\clabeltext\undefined \else
+%      \toks0=\expandafter{\clabeltext}%
+      \toks0=\expandafter{#2}%
+      \ifx#1t\edef\tmp{\noexpand\wref\noexpand\Xtab
+                       {{\lastlabel}{\thetnum}{\the\toks0}}}\tmp
+      \else  \edef\tmp{\noexpand\wref\noexpand\Xfig
+                       {{\lastlabel}{\thefnum}{\the\toks0}}}\tmp
+   \fi%\fi
+  % \global\let\clabeltext=\undefined
+   \vskip-\parskip
+}
+
+%\def\printcaption#1#2{{\bf#1 #2.}\enspace}
+\def\printcaption#1#2{\llap{#1 #2 -\enspace}}
+
+%\def\clabel[#1]#2{\gdef\clabeltext{#2}\label[#1]}
+
+\def\tofline#1#2#3#4{{\leftskip=0pt \rightskip=\iindent plus1em
+   \ctpush{\hbox to 5em{\mtext{#4}\ \ref[#1]\ -}}
+   {#3\unskip}\nobreak\tocdotfill\pgref[#1]\nobreak\hskip-\iindent\null\par}}
+\let\totline=\tofline
+
+\def\maketof{\par \ifx\toflist\empty
+      \opwarning{\noexpand\maketof -- data unavailable, TeX me again}\openref
+   \else \toflist \fi}
+
+\def\maketot{\par \ifx\totlist\empty
+      \opwarning{\noexpand\maketot -- data unavailable, TeX me again}\openref
+   \else \totlist \fi}
+
+%%% Numbered paragraphs
+
+\newcount\numA \newcount\numB \newcount\numC \newcount\numD \newcount\numE
+
+%\def\chaphook#1\relax{\secnum=0 \seccnum=0 \secccnum=0 \relax}
+
+\def\chaphook#1\relax{\numA=0 \numB=0 \numC=0 \numD=0 \numE=0 
+   \secnum=0 \seccnum=0 \secccnum=0 \relax}
+
+\def\numberedpar#1#2{\par \global\advance\csname num#1\endcsname by1
+   \noindent\wlabel{\thechapnum.\the\csname num#1\endcsname}%
+   {\bf#2 \thechapnum.\the\csname num#1\endcsname.}\space} 
+
+%%% Blue verbatim
+
+%\ttindent=\parindent
+\ttindent=4.1mm
+
+%{\tenss \thefontscale[700] \global\let\sevenss=\thefont}
+
+\def\tthook{\parskip=0pt %\typosize[10.5/13.6]
+   \tenpoint\setbaselineskip[13.6]
+}
+
+\def\begtt{\ttskip\vskip.5\parskip\bgroup \aftergroup\parskipcorr\wipeepar
+   \setverb \adef{ }{ }%
+   \ifx\savedttchar\undefined \else \catcode\savedttchar=12 \fi
+   \parindent=\ttindent
+   \tthook\relax
+   %\everypar={\rlap{\locc\liBlue 
+   \everypar={\rlap{\locc\liGrey  % muda de azul pra cinza 
+    \hskip-\ttindent \vrule width\hsize \strut}%
+    \ifnum\ttline<0 \else \global\advance\ttline by1
+                \llap{\locc\Blue\sevenss\the\ttline\kern.5em\indent}\fi \kern2pt\Black}
+   \def\par##1{\endgraf\ifx##1\egroup\else\penalty\ttpenalty\vskip-1pt\leavevmode\fi ##1}
+   \obeylines \startverb
+}
+\def\parskipcorr{\vskip-.5\parskip}
+
+\def\viprintline{\vskip-1pt\indent
+   \rlap{\locc\liBlue \hskip-\ttindent \vrule width\hsize \strut}%
+   \ifnum \ttline<-1 \else 
+      \llap{\locc\Blue\sevenrm\ifnum\ttline<0 \the\viline \else
+               \global\advance\ttline by1 \the\ttline \fi \kern.5em\indent}\kern2pt
+   \fi
+   \Black \tmp\par % print the line from \tmp
+}
+
+
+%%% Blue centered tables
+
+\def\ctable#1#2{
+   \smallskip\centerline{\setbox0=\table{#1}{#2}%
+   %\rlap{\locc\liBlue \tmpdim=\ht0 \advance\tmpdim by3pt
+   \rlap{\locc\White \tmpdim=\ht0 \advance\tmpdim by3pt % alterado pra ficar sem cor azul 'liBlue'
+   \vrule width\wd0 height\tmpdim depth5pt\Black}\box0}\nobreak
+}
+\def\tabiteml{\indent}\def\tabitemr{\indent}
+
+\def\cinspic#1 {\centerline{\inspic #1 }\nobreak\medskip}
+\let\oriendinsert=\endinsert
+\def\endinsert{\par\oriendinsert}
+%\def\tabiteml{\kern\iindent} \def\tabitemr{\kern\iindent}
+\def\tabiteml{\kern 4.1mm} \def\tabitemr{\kern 4.1mm}
+
+
+%%%%%%%%%%%%%% \fnote
+
+% modificando a funcao vfootnote e textindent (e renomeando) do plain.tex pra eliminar o espaco entre o indice e o texto
+\def\etextindent#1{\indent\llap{#1}\ignorespaces}%
+
+\catcode`@=11
+\def\evfootnote#1{\insert\footins\bgroup%
+  \interlinepenalty\interfootnotelinepenalty%
+  \splittopskip\ht\strutbox% top baseline for broken footnotes
+  \splitmaxdepth\dp\strutbox \floatingpenalty\@MM%
+  \leftskip\z@skip \rightskip\z@skip \spaceskip\z@skip \xspaceskip\z@skip%
+  \etextindent{#1}\footstrut\futurelet\next\fo@t}%
+\catcode`@=12
+
+\def\fnote#1{\global\advance \fnotenum by1
+   \iflocfnum \leavevmode\openref\wref\Xfnote{}%
+      \isdefined{fn:\the\fnotenum}\iftrue
+      \else\opwarning{unknown \noexpand\fnote mark. TeX me again}\fi\fi
+   \fnmarkx{\fnotehook\tenpoint\tensingle\evfootnote\fnmarkx{#1}}%
+}
+\def\fnotetext#1{\global\advance \fnotenum by1 \openref\wref\Xfnote{}%
+   {\tenpoint\tensingle\evfootnote\fnmarkx{#1}}%
+}
+% retira um parentese colocado na nota de rodape
+\def\thefnote{$^{\locfnum}$}%
+
+
+%%% Golossary (OPmac trick 0051, 0053, 0054
+
+\newdimen\maxglosindent
+\def\gloslist{}
+\def\glos #1#2{\def\tmpb{#1}%
+   \expandafter\isinlist\expandafter\gloslist\csname;\mmeaning\tmpb\endcsname
+   \iftrue \opwarning{Duplicated glossary item `#1'}%
+   \else
+      \global\sdef{;\mmeaning\tmpb}{{#1}{#2}}%
+      \global\expandafter\addto\expandafter\gloslist\csname;\mmeaning\tmpb\endcsname
+   \fi
+}
+\def\makeglos{%
+   \ifx\gloslist\empty \opwarning{Gossary data unavailable}%
+   \else
+      \bgroup
+        \let\iilist=\gloslist
+        \preparespecialsorting \dosorting
+        \ifdim\maxglosindent=0pt 
+           \ifx\glosindent\undefined \maxglosindent=2\parindent
+              \edef\glosindent{\the\maxglosindent}\fi
+        \else \edef\glosindent{\the\maxglosindent}\fi
+        \maxglosindent=0pt
+        \def\act##1{\ifx##1\relax \else\expandafter\printglos##1\expandafter\act\fi}
+        \expandafter\act\iilist\relax
+        \immediate\write\reffile{\string\def\string\glosindent{\the\maxglosindent}}
+      \egroup
+   \fi
+}
+\def\preparespecialsorting{%
+   \setprimarysorting
+   \def\act##1{\ifx##1\relax\else \preparesorting##1%
+      \expandafter\edef\csname\string##1\endcsname{\tmpb}%
+      \expandafter\act\fi}%
+   \expandafter\act\iilist\relax
+   \def\firstdata##1{\csname\string##1\endcsname&}%
+}
+\def\glosref #1#2{\if^#2^\else \glos{#1}{#2}\fi 
+   \makegloslink{#1}\link[glos:\tmp]{}{#1}}
+\def\glref #1{\glosref{#1}{}}
+\let\glosborder=\tocborder
+
+\def\printglos#1#2{%
+   \setbox0=\hbox{#1}\ifdim\wd0>\maxglosindent \maxglosindent=\wd0 \fi
+   \noindent \hangindent=\glosindent \advance\hangindent by2em
+      \hbox to\glosindent{\makegloslink{#1}\dest[glos:\tmp]#1\hss}%
+      \hbox to2em{\hss\normalitem\hss}#2\par}
+
+\def\makegloslink#1{\def\tmpb{#1}\edef\tmpb{\mmeaning\tmpb}%
+   \def\tmp{}\expandafter\makegloslinkA\tmpb\relax}
+\def\makegloslinkA#1{\ifx#1\relax\else
+   \edef\tmp{\tmp\number`#1.}\expandafter\makegloslinkA\fi}
+
+\def\mmeaning#1{\expandafter\mmeaningA\meaning#1\relax}
+\def\mmeaningA#1->#2\relax{#2}
+
+
+%%% Requests for corrections (OPmac trick 0056)
+
+\newcount\rfcnum
+
+\def\rfclist{}  
+\def\rfcactive#1{\global\advance\rfcnum by1
+   \dest[rfc:rfc-\the\rfcnum]\global\addto\rfclist{\rfcitem #1}}
+\def\rfc#1{}
+\def\rfcitem{\advance\rfcnum by1
+   \medskip\noindent\llap{\link[rfc:rfc-\the\rfcnum]{\localcolor\Red}{[rfc-\the\rfcnum]} }}
+
+%\addto\draft{\let\rfc=\rfcactive}  %% uncomment this line if you need this feature
+
+\def\makerfc{\ifx\rfc\rfcactive
+   \vfil\break {\secfont \noindent Requests for correction}\par
+   \bgroup\rfcnum=0 \rfclist\egroup\fi}
+
+\let\rfcborder=\tocborder
+
+\outer\def\bye{\par\vfill\supereject\makerfc\end}
+
+
+%%% Items
+
+%\def\normalitem{{\locc\Grey\bf\thefontsize[35]\raise.5pt\hbox{.}\kern-1pt}\enspace}
+\def\normalitem{\locc\Grey{\bf\thefontsize[35].\kern-4pt}\Black\enspace}
+\sdef{item:x}{\raise.4ex\hbox{\locc\Grey\bf\thefontsize[17].\Black} }
+\sdef{item:n}{\the\itemnum.\kern.25em }
+\addto\begitems{\vskip.5\parskip \parskip=0pt\relax}
+\addto\enditems{\vskip-.5\parskip}
+
+\def\bull{\vrule height .9ex width .8ex depth -.1ex } % Marcador de item (quadrado solido)
+
+%\def\normalitem{\locc\Grey\bull\Black\enspace}
+
+
+%%% BibItems
+
+\let\alf\relax
+\input bib/abntcite-plain.tex %Carrega os padroes da ABNT de citacao
+\citeoption{abnt-repeated-title-omit=yes, abnt-show-options=warn, abnt-emphasize=bf, abnt-etal-list=0, abnt-url-package=url}
+
+\let\oriurl=\url
+
+\def\urlfont{\rm \hyphenchar\the\font=-1 \let\|=\urlspecchar}
+
+\def\bibtexhook{%
+   \def\preurl{}%
+   \def\url##1{<\oriurl{##1}>}
+}
+
+\def\makebib#1{% criei essa funcao adicional
+   \cleardoublepage
+   \bibchap\bigskip
+   \twelvesingle
+   %\bibliographystyle{mystyle} % caso queira usar outro estilo .bst no lugar do abnt
+   \def\bibskip{\bigskip}  % space between bibitems
+   \bibliography{#1} % listar as bases .bib usadas, entre virgulas. 
+}                           % A abntex2-options.bib eh adicionada automaticamente 
+
+
+%%% Last thinks:
+
+\def\abbrv[#1]{\par \noindent\llap{#1\quad}\ignorespaces}
+
+\def\urlnote#1{\fnote{\url{#1}}}
+\def\nextoddpage{\vfil\supereject
+   \ifodd\pageno \else \shipout\null \advancepageno \fi}
+
+\addto\runningfnotes{\addto\chaphook{\global\fnotenum=0}}
+
+\addprotect\cite
+\addprotect\citeonline
+
+\def\dprime{"}
+\activettchar"
+
+\endinput
+
+%%% Versions:
+
+beta(a) Jul.2014  (06/07/2014)
+  (according to CTUstyle beta(u) Apr.2004)
+
+beta(b) - First version released
+          \app/secchook corrected
+          \glos, \glosref, \makeglos introduced
+          \rfc introduced
+          Bug removing: labels with "_" can be printed in \draw mode
+          \addprotect\cite plus \clabel correction
+  (according to CTUstyle beta(Z) Oct.2014)

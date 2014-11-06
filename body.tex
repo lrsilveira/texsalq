@@ -1,0 +1,926 @@
+%%%%%%%%%%%%%% Introducao
+\cleardoublepage
+\chap INTRODUÇÃO
+
+\TeX{} (pronunciado \asp{{\sl tec}}, como em tecnologia) é um sistema de tipografia criado por Donald Knut e lançado pela primeira vez em 1978. É considerado como um dos sistemas de tipografia digital mais sofisticados do mundo, sendo muito popular no meio acadêmico por produzir fórmulas matemáticas complexas de uma forma elegante.
+%http://en.wikipedia.org/wiki/\TeX{}
+%http://pt.wikipedia.org/wiki/\TeX{}
+
+Esse sistema é encontrado em vários formatos. O padrão original criado por Knuth, com cerca de 600 comandos, é referido como \TeX{} puro (\asp{plain \TeX}). O formato mais amplamente utilizado é o La\TeX, desenvolvido por Leslie Lamport, que incorpora os estilos de documento para livro, carta, artigo, etc., e adiciona suporte para referência e numeração automática de seções e equações, dentre outras coisas. %http://en.wikipedia.org/wiki/\TeX{}
+Há ainda outros formatos, como Xe\TeX, XeLa\TeX, Lua\TeX, Con\TeX t, pdf\TeX, te\TeX, etc. Todos têm como base o \TeX{} puro, sendo extensões deste.
+
+Uma das vantagens em se utilizar diretamente o \TeX{} puro ao invés de La\TeX, por exemplo, é que através do contato direto com o mecanismo do \TeX, ou seja, um nível mais baixo da linguagem, é possível ter um controle maior sobre o resultado produzido. Porém, é necessário conhecer a linguagem de programação, para desenvolver as próprias macros ou modificar as macros criadas por outros.
+
+Felizmente, alguns desenvolvedores têm criado macros e modelos de documento de fácil utilização, que não necessitam, num primeiro momento, de um conhecimento profundo sobre \TeX{} puro.
+Petr Ol\v{s}ák, professor na Universidade Técnica Checa em Praga, desenvolveu um conjunto de macros simples e eficiente, chamado OPmac. Isso permite ao utilizador do \TeX{} puro tirar proveito das funcionalidades básicas encontradas no La\TeX, como seleção de fontes, criação automática de sumário, referências bibliográficas, tabelas, etc. Criou também modelo para teses em sua universidade, o CTUstyle, que funciona com o OPmac \cite[opmac]. O conjunto de macros, além do idioma padrão inglês, funciona apenas com os idiomas tcheco ou eslovaco, com seus respectivos caracteres especiais e hifenizações.
+
+No modelo \TeX SALQ aqui apresentado em sua primeira versão, foram utilizadas como base as macros CTUstyle, OPmac, e um pacote para La\TeX{} utilizado para referências bibliográficas de acordo com as normas da ABNT, o ABN\TeX{}2. O CTUstyle foi profundamente modificado para atender às normas para dissertações e teses da ESALQ, bem como funcionar em língua portuguesa. As funcionalidades essenciais do ABN\TeX 2 foram reescritas em \TeX{} puro, com base no OPmac, uma vez que só existe disponível, até o momento, a versão para La\TeX. Além disso, foi modificado para atender às normas da ESALQ de referências bibliográficas. Outras funcionalidades do ABN\TeX 2 estão em processo de reescrita, e serão disponibilizadas na medida em que forem concluídas.
+
+Este documento descreve o uso das macros do \TeX SALQ, feitas em \TeX{} puro, %que poderão 
+que poderiam ser oficialmente recomendadas aos estudantes de mestrado e doutorado para a elaboração de suas dissertações e teses pela ESALQ/USP. O código-fonte deste documento pode servir como exemplo de criação de seu próprio documento. Obviamente, deve ser editado para ficar com apenas um autor, e com a estrutura de tópicos da tese ou dissertação.
+
+Para utilizar este modelo você deverá ter um conhecimento básico de \TeX{} e uma versão funcional do pdf\TeX{}. O programa pdf\TeX{} faz parte do pacote \TeX live disponível na maioria das distribuições linux. \TeX live está livremente disponível, é gratuito, e também pode ser instalado em Macintosh ou MS Windows. Contudo, para MS Windows recomendamos o programa MikTeX.
+
+\sec Documento mínimo
+
+Aqui será descrito o mínimo que seu documento deve conter, ou seja, as macros obrigatórias. Você pode criar um arquivo "minimo.tex" contendo o seguinte:
+
+\begtt
+
+\input macros/texsalq
+\worktype [M/PT]
+\title {Documento mínimo}
+\author {Fulano de Tal}
+\supervisor {Prof. Dr. Beltrano da Silva}
+\date {2014}
+\abstractEN {This document is for testing purpose only.}
+\abstractPT {Este documento é somente para teste.}
+\titarea {Ciências}
+\concarea{Engenharia de Sistemas Agrícolas}
+\makefront
+
+\chap Introdução
+
+Texto de introdução.
+
+\sec Uma idéia
+
+Outro texto.
+\bye
+
+\endtt
+
+Em seu diretório (ou pasta) de trabalho, onde se encontra o arquivo "minimo.tex", copie os diretórios "macros" e "bib", bem como o arquivo "make". Além disso, o arquivo "minimo.tex" deve ser digitado exatamente como mostrado acima (incluindo as linhas em branco após Introdução e Uma idéia). Depois, o arquivo deve ser processado com o pdf\TeX{}, através do "make". Isso quer dizer que você deve digitar no prompt de comando:
+
+\begtt
+make minimo
+\endtt
+
+Após algumas mensagens escritas na tela você terá o arquivo "minimo.pdf" criado, que é seu documento final (ou compilado).
+
+O que contém o documento mínimo? A primeira linha diz o conjunto de macros utilizado, o \TeX SALQ. A segunda linha define o tipo de documento. Você tem as seguintes opções:
+
+\begtt
+\worktype [M/PT] % Dissertação de Mestrado em português
+\worktype [M/EN] % Dissertação de Mestrado em inglês
+\worktype [D/PT] % Tese de Doutorado em português
+\worktype [D/EN] % Tese de Doutorado em inglês
+\endtt
+
+Seguindo para as próximas linhas, uma série de comandos que definem as informações básicas do documento são declarados. Nenhum deles deve estar faltando ou um erro será gerado na execução do "make".
+
+Em seguida o comando "\makefront" cria a capa e a contracapa, imprime o texto do sumário, resumo e listas de figuras e tabelas.
+
+Depois do "\makefront" o texto do documento continua. Aqui é o \asp{corpo} do documento onde ficarão os capítulos: Introdução, Material e Métodos, Resultados e discussão e Conclusão. Um capítulo começa com o comando "\chap". Uma seção (ou subitem) deste capítulo começa com o comando "\sec". É possível ter até três níveis de seções. O segundo e o terceiro nível são inseridos com os comandos "\secc" e "\seccc". Após um comando de capítulo ou seção, é necessário deixar uma linha em branco (ou acrescentar uma instrução "\par" no fim da linha) para indicar o início de um novo parágrafo.
+
+\sec Comandos que definem as informações básicas do documento
+
+Além dos comandos de declaração obrigatória acima mencionados, é habitual usar alguns mais. Todos estes comandos estão listados na Tabela 1.1. Se qualquer um dos comandos opcionais não forem declarados no trabalho, isso significa que seu valor é vazio. A ordem de declaração dos comandos no documento não importa, mas todos devem ser colocados antes do "\makefront".
+
+\midinsert
+\label[declaracao]
+\def\*{{\rm*}}
+\caption/t {Lista de comandos de declaração. Comandos marcados com um asterisco são obrigatórios}
+\ctable{ll}{
+\crl\quad Comando   & \quad Significado \crl \tskip 4pt
+\ttb title\*        & Título da tese ou dissertação. \cr 
+\ttb author\*       & Nome do autor. \cr 
+\ttb supervisor     & Título e nome do orientador. \cr 
+\ttb date\*         & Ano de criação do documento. \cr 
+\ttb city	    & Cidade onde o documento foi criado. \cr
+\ttb authorinfo     & Título de graduação do autor. \cr 
+\ttb workname       & Dá nome a \asp{outro} trabalho caso não seja tese ou dissertação. \cr 
+\ttb titleEN        & Título em inglês, caso o trabalho esteja em português. \cr 
+\ttb titlePT        & Título em português, caso o trabalho esteja em inglês. \cr  
+\ttb abstractEN\*   & Resumo em inglês. \cr 
+\ttb abstractPT\*   & Resumo em português. \cr 
+\ttb keywordsEN     & Palavras-chave em inglês. \cr 
+\ttb keywordsPT     & Palavras-chave em português. \cr 
+\ttb thanks         & Texto de agradecimento. \cr 
+\ttb epigraph       & Texto da epígrafe. \crl
+}\par\nobreak\medskip
+\endinsert
+
+O valor de cada comando deve estar entre chaves "{...}" e escrita na língua do documento principal, ou seja, na língua que você escolheu no comando "\worktype". 
+
+Entre as informações requeridas estão "\abstractEN" e "\abstractPT". Caso a língua principal do documento seja o português, um resumo em língua inglesa deve estar contido no texto, e vice-versa. Da mesma forma, "\titleEN" só deve ser usado caso o idioma escolhido seja o português, e "\titlePT" se o idioma escolhido for o inglês. Essas informações aparecem na página do resumo de cada idioma.
+
+Se o título é muito longo, a quebra de linha é feita automaticamente para que fique distribuído em várias linhas. Caso queira quebrar a linha num local diferente da quebra automática, adicione o comando "\break" no local desejado.
+
+Caso seu tipo de documento não seja tese nem dissertação, você pode especificar outro tipo com o comando "\worktype [O/PT]" (ou em inglês). Neste caso, as definições "\abstractEN" e "\abstractPT" se tornam opcionais e você pode definir o comando "\workname". Por exemplo:
+
+\begtt
+\workname {Lição de casa do assunto AB004C}
+\endtt
+
+A recomendação para a criação de seu documento é copiar o documento "texsalq-doc.tex", o arquivo "make", bem como os diretórios "macros" e "bib" para seu diretório de trabalho, e renomeá-lo para, por exemplo, "primorosa-tese.tex". Neste novo arquivo, então, fazer as alterações onde seu trabalho difere do presente documento. Após as alterações seu trabalho pode ser compilado através do comando:
+
+\begtt
+make primorosa-tese
+\endtt
+
+\sec O layout do texto do código-fonte
+
+O autor decide se, após o uso do "\makefront" em seu código-fonte, o texto continua a ser escrito em um único arquivo (como feito no documento mínimo). Para trabalhos mais extensos, às vezes é vantajoso dividir o corpo do documento em arquivos individuais por capítulos, por exemplo, através do comando "\input". No modelo \TeX SALQ, é utilizado somente um "\input" contendo todo o corpo do texto (Introdução, Material e métodos, Resultados e discussão e Conclusão). Você pode visualizar esse conceito abrindo o arquivo "texsalq-doc.tex" e procurando por "\input body". Nada impede que você deseje utilizar um arquivo somente para a introdução, outro para material e métodos e assim por diante. Basta inserir um "\input" para cada arquivo criado, na sequência que desejas que apareçam.
+
+Os leitores estão encorajados a olhar para o código-fonte deste documento "body.tex", bem como para o "texsalq-doc.tex". Assim você pode se familiarizar com sua aparência (seu layout) e com a \asp{cultura de escrever códigos-fonte}. Caso não queiras se aprofundar muito no \TeX{}, deve-se evitar mudar muito as posições das linhas de código. Apesar do \TeX{} ser muito tolerante, algum erro pode ocorrer. Similaridades com outras linguagens de programação é mera coincidência.
+
+Se você olhou o arquivo "texsalq-doc.tex", você deve ter notado que há um caractere {\tt\%}. Ele é usado como um caractere de comentário. Tudo a partir dele, até ao final de linha, será considerado comentário. Os comentários são ignorados durante o processamento de um documento. Você pode ver no arquivo compilado somente um capítulo, por exemplo, se todos os outros "\input" estiverem precedidos do sinal de porcentagem. Esta é a prática normal quando você se concentra em um problema menor e não quer gastar o tempo de processamento de todo o documento.
+
+\sec Ambiente de Trabalho
+
+A escolha do editor de texto a ser utilizado na elaboração do código-fonte é da escolha de cada autor. Nesse caso, aqui você não encontrará nenhuma recomendação. Busque na internet, pergunte a amigos. É claro que o editor deve ser do tipo \asp{editor para programadores}, ou seja, o editor não deve criar nenhum tipo de elementos de formatação escondidos. O arquivo deve ser salvo no disco como texto simples, em português ou inglês, com codificação iso-8859-1 (latin1). Preferencialmente, é recomendável que o editor contenha \asp{syntax highlighting}, ou seja, uma diferenciação, através de cores, entre comandos do \TeX{} e o texto. Isso facilita o trabalho e o deixa mais agradável aos olhos. É recomendado também que se tenha em uma outra janela um visualizador de PDF permanentemente aberto, configurado para detectar mudanças no arquivo PDF, mostrando sempre a última versão compilada de seu documento.
+
+A compilação do documento é um processo razoavelmente complexo. Nos arquivos de lote ou scripts "make.bat" (versão para MS Windows) ou "make.sh" (versão para Linux), disponibilizados junto com o \TeX SALQ, estão contidas todas as instruções para a correta compilação do documento. Basta que o autor execute o script compatível com seu sistema para que o arquivo ".pdf" seja gerado. %
+%O modelo \TeX SALQ inclui macros que controlam as chamadas das citações e referências bibliográficas, sendo então necessário a execução do comando "bibtex".
+Como todo script deve ser executado com cautela, abaixo transcrevemos o conteúdo do "make.sh" (você pode visualizá-lo também, caso o queira, basta abri-lo) com uma breve explicação de seu funcionamento (o "make.bat" é equivalente):
+
+\begtt
+#!/bin/bash
+
+if [ $# -eq 0 ]; then
+  file='texsalq-doc'
+else
+  file=$1
+fi
+
+hifen='padraohifen'
+
+pdftex -ini macros/${hifen}.tex
+pdftex -fmt=${hifen}.fmt ${file}
+bibtex ${file}
+pdftex -fmt=${hifen}.fmt ${file}
+pdftex -fmt=${hifen}.fmt ${file}
+rm ${hifen}.fmt ${hifen}.log ${file}.blg
+rm ${file}.log ${file}.aux ${file}.ref ${file}.bbl
+
+exit 0
+\endtt
+%$
+
+Primeiro, um condicional verifica se há um parâmetro de nome de arquivo na chamada do script. Se houver, será processado o arquivo com o nome fornecido, caso contrário, o nome default "texsalq-doc" será o arquivo utilizado.
+
+Em seguida, é carregado o "initex", que compila a tabela de hifenização em português para ser posteriormente aplicada ao documento.
+
+O "pdftex" é chamado e em seguida o "bibtex", organizando as referências. Depois o "pdftex" é chamado mais duas vezes a fim de se finalizar a compilação com todas as referências. Já que vários arquivos auxiliares (com lista de figuras, tabelas, números de equações e citações) são criados, a compilação é feita por etapas. Logo depois os arquivos auxiliares são apagados e o script termina com sucesso.
+
+\sec Solução de problemas
+
+O modelo \TeX SALQ foi testado em ambiente linux (Debian 7.0 \asp{wheezy} e Ubuntu 14.04 \asp{Trusty Tahr}), utilizando a versão 2013 do \TeX live, e em ambiente Windows (XP e 7) utilizando a versão 2.9 do Mik\TeX. Caso você encontre problemas, verifique se sua versão do \TeX live ou Mik\TeX{} é inferior a essas e faça o upgrade para a versão mais nova.
+
+Um problema comum é a acentuação. Caso alguns caracteres estranhos estejam aparecendo no lugar dos acentos, verifique se o arquivo de código-fonte está com codificação ISO-8859-1 (ou latin1). Isso é comum de acontecer em máquinas linux, então para verificar a codificação do arquivo execute no prompt de comando:
+
+\begtt
+file nome-do-arquivo.tex
+\endtt
+
+Na maioria dos casos, o comando diz que o arquivo está em UTF-8. Nesse caso (ou em qualquer outro caso com codificação diferente de ISO-8859-1), execute:
+
+\begtt
+iconv -t ISO-8859-1 nome-do-arquivo.tex > nome-do-arquivo-iso.tex
+\endtt
+
+Assim você criará um novo arquivo "nome-do-arquivo-iso.tex" com codificação ISO-8859-1, mantendo o original "nome-do-arquivo.tex". O novo arquivo é que deverá ser compilado.
+
+O formato de página padrão no arquivo "PDF" deve ser o A4 (padrão para teses na ESALQ). Se em seu arquivo "PDF" o formato do papel for Carta, o \TeX live deve ser reconfigurado. No linux, basta digitar (você deve ter acesso ao superusuário):
+
+\begtt
+sudo paperconfig -p a4
+\endtt
+
+O modelo \TeX SALQ ainda está em fase de testes, portanto, é normal erros e comportamentos inesperados ainda ocorrerem. Caso ache que isso ocorreu, mande um e-mail para "lrsilveira@gmail.com" ou para "andre.herman@yahoo.com" com o título \asp{Erro TEXSALQ}, a descrição do erro no corpo da mensagem, o arquivo de log do documento e, se possível, o código-fonte do documento, pelo menos a parte que está gerando o erro.
+
+\secc Funcionalidades a implementar conhecidas
+
+Como o modelo \TeX SALQ está em sua primeira versão e em constante desenvolvimento, há funcionalidades não essenciais num primeiro momento que não foram implementadas ainda. Algumas serão implementadas posteriormente; outras, apenas conforme a necessidade de trabalho, mediante solicitação. A seguir, uma lista dessas funcionalidades:
+\begitems
+* {\em Hyperlinks} para referências bibliográficas;
+* Anexos;
+* Elementos opcionais, como lista de abreviaturas e siglas, lista de símbolos, índice (talvez em duas colunas) e glossário;
+* Resumo em espanhol e francês;
+* Rotação de figuras e tabelas;
+* Mais níveis de subseções.
+\enditems
+
+
+
+%%%%%%%%%%%%%% Revisão bibliografica
+\cleardoublepage
+
+
+\chap PARTES DO DOCUMENTO
+
+Este documento não foi construído com o intuito de servir como um guia para usar o \TeX{} puro. Cremos, no entanto, que o usuário novato é capaz de criar um documento \TeX{} normal, seguindo o que aqui está exposto. Recomendamos a leitura de documentação \TeX{} adicional, tais como os primeiros capítulos do "texbook.pdf" \cite[tex1], "Gentle.pdf" \cite[tex2] e da documentação que originou o modelo \TeX SALQ, o conjunto de macros OPmac "opmac-u-en.pdf" \cite[opmac] contida no diretório "documentacao-adicional". Este capítulo refere-se a algumas seções individuais da documentação OPmac.
+
+Toda a documentação do OPmac é válida com exceção da seção 1 que explica o uso das fontes. Como a língua utilizada no OPmac é a tcheca, foi necessário utilizar outra definição de fontes que abrangesse o português, no caso o conjunto de macros escolhido foi o "fontch" \cite[fontch]. Mais detalhes na seção \ref[fontes].
+
+\sec Capítulos, seções, subseções e apêndices
+
+O documento pode ser dividido em capítulos, seções, subseções e anexos/apêndices. É possível se ter até três níveis de subseções, sendo "\sec", "\secc" e "\seccc" para o primeiro, segundo e terceiro níveis, respectivamente. Para incorporar um apêndice, utilize "\app". Um resumo é mostrado abaixo:
+
+\begtt
+\chap Título do Capítulo 
+\sec Título da Seção 
+\secc Título da Subseção 
+\seccc Título do terceiro nível da seção 
+\app Título do apêndice
+\endtt
+
+Capítulos, seções e seus níveis de subseções, assim como apêndices, podem ser referenciados no texto com uso de "\label" (ver documentação do OPmac). O Apêndice~\ref[appexemplo] é um exemplo de como fica um apêndice no documento.
+
+%Os apêndices também podem ser divididos em seções e subseções. Mas as normas da ESALQ não dizem nada a respeito.
+
+\sec Imagens, tabelas, listas e mais
+
+\secc Imagens
+
+Os formatos de imagem que podem ser inseridas são JPG, PNG (bitmap) ou PDF (vetor e bitmap). Utilize o comando "\inspic" para inserir qualquer um dos formatos. Consulte a seção 12 da documentação do OPmac. Para inserir a legenda sob a imagem, utilize o comando "\caption/f", em que o "/f" ao fim do comando define uma figura.  \TeX SALQ também define um comando "\cinspic", o que coloca a imagem no centro. Por exemplo:
+
+\begtt
+\medskip
+\label[esalqlogo]
+\picw=5cm \cinspic esalqlogo.pdf
+\caption/f {Exemplo de imagem centralizada. Provavelmente a mais comum}
+\medskip
+\endtt
+
+\noindent
+gera a Figura \ref[esalqlogo].
+
+O comando "\label[esalqlogo]" serve para identificar a figura para ser referenciada posteriormente com o "\ref[esalqlogo]". Note no parágrafo acima que o texto ``gera a Figura \ref[esalqlogo].'' é digitado no código-fonte da seguinte forma:
+\begtt
+gera a Figura \ref[esalqlogo].
+\endtt
+
+\medskip
+\label[esalqlogo]
+\picw=5cm \cinspic esalqlogo.pdf
+\caption/f {Exemplo de imagem centralizada. Provavelmente a mais comum}
+\medskip
+
+O exemplo acima também serve para o comando "\inspic" caso não se queira a imagem centralizada.
+
+Ás vezes a figura é muito grande para caber no final da página, o que gera problemas de quebra de página. Nesse caso, é conveniente colocar a figura entre os comandos "\midinsert" e "\endinsert". Dessa forma, se houver problemas a figura será colocada automaticamente na página seguinte. Ou utilizar "\topinsert" para a figura ir para o topo da página.
+
+\begtt
+\midinsert
+\picw=5cm \cinspic esalqlogo.pdf
+\caption/f {Exemplo de imagem centralizada. Provavelmente a mais comum}
+\endinsert
+\endtt
+
+Usando o "\topinsert", por exemplo, a figura terá prioridade de aparecer no topo da página caso seja possível.
+
+\secc Tabelas
+
+Para inserir tabelas, use o comando "\ctable{alinhamento de coluna}{dados}". Por exemplo:
+
+\begtt
+\midinsert\medskip \label[estudantes]
+\caption/t {Número de diplomados na CTU}
+\ctable{lrrrrr}{
+\crl\hfil Número de      & 2007 & 2008 & 2009 & 2010 & 2011 \crl \tskip4pt
+estudantes de graduação  & 6313 & 5913 & 5951 & 5188 & 4737 \cr
+estudantes de mestrado   & 1195 & 1489 & 1379 & 1160 & 1260 \cr
+estudantes de doutorado  & 457  &  468 &  366 &  395 &  434 \cr
+doutores formados        & 65   &   60 &   55 &   54 &   51 \crl
+{\tenpoint Fonte: \citeonline[opmac]} \hfill &  &  &  &  & \cr
+}
+\endinsert
+\endtt
+cria a tabela \ref[estudantes].
+
+\midinsert\medskip \label[estudantes]
+\caption/t {Número de diplomados na CTU}
+\ctable{lrrrrr}{
+\crl\hfil Número de      & 2007 & 2008 & 2009 & 2010 & 2011 \crl \tskip4pt
+estudantes de graduação  & 6313 & 5913 & 5951 & 5188 & 4737 \cr
+estudantes de mestrado   & 1195 & 1489 & 1379 & 1160 & 1260 \cr
+estudantes de doutorado  & 457  &  468 &  366 &  395 &  434 \cr
+doutores formados        & 65   &   60 &   55 &   54 &   51 \crl
+{\tenpoint Fonte: \citeonline[opmac]} \hfill &  &  &  &  & \cr
+}
+\endinsert
+
+Note que o o alinhamento das colunas é dado por \asp{"r"} sendo alinhado à direita, \asp{"c"} centralizado e \asp{"l"} alinhado à esquerda. No exemplo acima, a tabela contém seis colunas, sendo a primeira alinhada à esquerda e o resto alinhada à direita. As colunas são separadas com o símbolo "&" e a linha da tabela é finalizada com "\cr". Sempre que for conveniente encerrar uma linha da tabela com uma linha horizontal, use "\crl" ao invés de "\cr", conforme a primeira e última linhas do exemplo.
+
+Os comandos "\midinsert" e/ou "\topinsert" e "\endinsert" funcionam nas tabelas da mesma forma que nas imagens. Para maiores detalhes sobre criação de tabelas, consulte a documentação do OPmac.
+
+
+\secc Perfil, listagens de código
+
+Caso se deseje mostrar códigos-fonte (como é feito neste documento) ou algum tipo de texto não formatado utilize os comandos "\begtt" e "\endtt" para iniciar a finalizar o modo verbatim, respectivamente, como no exemplo abaixo:
+
+\begtt
+Para enfatizar uma palavra, use {\sl itálico} para alternar
+o comando "\sl", ou seja, "{\sl destaque palavra}".
+\endtt
+
+Esses pedaços do código não são interpretados pelo compilador e tudo (inclusive comandos do \TeX) é exibido sem formatação.
+
+\secc Notas de rodapé
+
+Para notas de rodapé\fnote{Exemplo de nota} usar "\fnote{"{\it <text>}"}". As notas de rodapé são numeradas em cada página iniciando do número 1.
+
+\secc Realçar texto
+
+Para {\sl enfatizar} uma palavra utilize "{\sl palavra}", para deixá-la em {\bf negrito} utilize "{\bf palavra}" e para deixá-la em {\it itálico} utilize "{\it palavra}".
+
+
+\secc Listas
+
+A criação de listas com marcadores é descrito na seção 5 da documentação do OPmac. Itens, numerados ou não são feitos colocando-os entre os comandos "\begitems" e "\enditems". O padrão são itens não numerados. Para numerá-los basta definir o comando "\style n" como no exemplo:
+\begtt
+\begitems
+\style n
+* Item 1
+* Item 2
+\enditems
+\endtt
+Tendo como resultado:
+\begitems
+\style n
+* Item 1
+* Item 2
+\enditems
+
+O \TeX SALQ define como marcador um círculo cinza. Veja como fica na seção \ref[hifens], que trata sobre aspas e hifens.
+
+\secc Equações
+
+As equações devem ser inseridas entre dois cifrões \$\$. Para inserir equações na linha do texto, deve-se colocá-las entre um cifrão. Veja o exemplo abaixo:
+\begtt
+O número $\pi$ é irracional e aparece em equações como:
+$$
+A = \pi r^2 \eqmark
+$$
+%
+onde $r$ [L] é o raio do círculo.
+\endtt
+Gera:
+
+O número $\pi$ é irracional e aparece em equações como:
+$$
+A = \pi r^2 \eqmark
+$$
+%
+onde $r$ [L] é o raio do círculo.
+
+O comando "\eqmark" ao fim da equação a enumera automaticamente. O uso do sinal de porcentagem "%" serve para que não seja criado um novo parágrafo após a equação. O comando "\label" pode ser utilizado também com as equações para referenciá-la no texto, usando o "\ref", da mesma forma que acontece com Figuras, Tabelas, Capítulos, etc. Para maiores informações sobre como escrever equações no \TeX{} veja a respectiva documentação.
+
+\label[fontes]
+\secc Tamanhos de fonte e espaçamento
+
+A fonte padrão utilizada no modelo é Latin Modern (fontes cork-LM, carregadas na macro "fontch"). Os tamanhos de fontes predefinidos são 8, 10, 12, 14, 20 e 24.
+Os tamanhos podem ser definidos respectivamente pelos comandos:
+\begtt
+\eightpoint
+\tenpoint
+\twelvepoint
+\fourteenpoint
+\twentypoint
+\twentyfourpoint
+\endtt
+
+O \TeX SALQ predefine seis espaçamentos de fonte, equivalentes aos espaçamentos de fontes do MS Word, para tamanhos 10 e 12. Os comandos são nomeados para espaçamento de 1, 1.5 e 2:
+\begtt
+\tensingle
+\tenonehalf
+\tendouble
+\twelvesingle
+\twelveonehalf
+\twelvedouble
+\endtt
+
+Esses comandos podem ser usados em qualquer parte do documento, sempre que se queira alterar o tamanho da fonte ou o espaçamento.
+
+A documentação sobre as fontes usadas no \TeX SALQ pode ser encontrada em "fontch.pdf" \cite[fontch].
+
+\label[hifens]
+\secc Aspas e hífens
+
+Para inserir aspas, não utilize a tecla de aspas do teclado. Ao invés, utilize dois acentos graves (\`{}\`{}) e dois apóstrofos ('{}'{}) para abrir e fechar aspas, respectivamente. Também pode ser utilizado o comando "\asp{"{\it <texto>}"}", definido no \TeX SALQ. Por exemplo, o texto abaixo
+
+\noindent
+{\tt ...poderia ser chamado \`{}\`{}fulano''} ou "\asp{cicrano}"
+
+\noindent
+gera o texto: ...poderia ser chamado ``fulano'' ou \asp{cicrano}
+
+{\bf Hífens} em tipografia são dois:
+
+\begitems
+* Traço Médio: -- (como uma pausa em uma frase). Faz-se com dois hífens "---". 
+* Travessão: --- (usado em diálogos, por exemplo). Faz-se com três hífens "-----".
+\enditems
+
+
+\secc Links de páginas web
+
+Qualquer página da web referenciada no texto pode se tornar clicável com o comando "\url{endereço do site}". Por exemplo, "\url{http://petr.olsak.net}" cria \url{http://petr.olsak.net}. As url's podem aparecer em qualquer lugar do texto, inclusive nas notas de rodapé.
+
+\sec Citações bibliográficas
+
+As citações bibliográficas no \TeX SALQ seguem o padrão adotado pela ESALQ (uma modificação da ABNT) e são gerenciadas através de um arquivo externo que contém as informações de cada obra utilizada. Esse arquivo é utilizado pelo bib\TeX{} para montar as referências no corpo do texto e na relação final. O arquivo utilizado neste documento chama-se "mybib.bib", que pode ser tomado como exemplo. Para entrar com os dados referentes à uma obra consultada, deve-se seguir o padrão de escrita do bib\TeX{}. Por exemplo, um artigo seria relacionado dessa forma:
+
+\begtt
+@ARTICLE{ARTICLE1,
+  author = {First von Last, Jr.},
+  title = {T{\'\i}tulo da Obra: artigo com um autor},
+  journal = {T{\'\i}tulo da Revista},
+  year = {2000},
+  volume = {10},
+  pages = {15905-15913},
+  number = {2},
+  address = {Cidade}
+}
+\endtt
+
+Note que os acentos devem ser escritos como comandos, pois o bibTeX não interpreta caracteres acentuados.
+Para mais exemplos, veja o item final REFERÊNCIAS, nos documentos "abnt2cite.pdf" e "abnt2cite-alf.pdf".
+
+No mais, para se realizar citações no modelo \TeX SALQ, deve-se usar os comandos "\cite[citacao_bibtex]" ou "\citeonline[citacao_bibtex]". Observe o exemplo:
+\begtt
+... o modelo proposto por \citeonline[ARTICLE1] explica...
+
+... diminui a atividade de água \cite[ARTICLE4].
+\endtt
+Resulta:
+
+...o modelo proposto por \citeonline[ARTICLE1] explica...
+
+...diminui a atividade de água \cite[ARTICLE4].
+
+
+
+%%%%%%%%%%%%%% 
+\cleardoublepage
+
+
+\chap DICAS ÚTEIS
+
+\sec Criação de gráficos e figuras utilizando código
+
+Existe um conjunto de macros muito útil para criação de figuras e gráficos vetoriais, chamado PGF, que é usado com uma camada de sintaxe amigável, o TikZ\fnote{\url{http://sourceforge.net/projects/pgf/}}. Funciona em vários formatos do \TeX{}, como La\TeX{}, pdf\TeX{} e Con\TeX{}t. Para usar com o nosso exemplo de documento, ao invés de entrar como no La\TeX{} "\usepackage{tikz}", escreve-se "\input tikz.tex", e ao invés de "\begin{tikzpicture}" e "\end{tikzpicture}", escreve-se "\tikzpicture" e "\endtikzpicture". A Figura~\ref[exe_tikz] mostra um exemplo de uso.
+\input tikz.tex
+
+\midinsert
+\label[exe_tikz]
+\parindent=0pt
+\usetikzlibrary{calc,intersections,through,backgrounds}
+\tikzpicture[thick,help lines/.style={thin,draw=black!50}]
+\def\A{{\color{input}$A$}}
+\def\B{{\color{input}$B$}}
+\def\C{{\color{output}$C$}}
+\def\D{$D$}
+\def\E{$E$}
+
+\colorlet{input}{blue!80!black}
+\colorlet{triangle}{orange}
+\colorlet{output}{red!70!black}
+
+\coordinate [label=left:\A] (A) at ($ (0,0) + .1*(rand,rand) $);
+\coordinate [label=right:\B] (B) at ($ (1.25,0.25) + .1*(rand,rand) $);
+
+\draw [color=input] (A) -- (B);
+
+\node [name path=D,help lines,draw,label=left:\D] (D) at (A) [circle through=(B)] {};
+\node [name path=E,help lines,draw,label=right:\E] (E) at (B) [circle through=(A)] {};
+
+\path [name intersections={of=D and E,by={[label=above:\C]C}}];
+
+\draw [color=output] (A) -- (C) -- (B);
+
+\foreach \point in {A,B,C}
+\fill [black,opacity=.5] (\point) circle (2pt);
+
+\pgfonlayer{background}
+  \fill[color=triangle!80] (A) -- (C) -- (B) -- cycle;
+\endpgfonlayer
+
+\node [below right, text width=9cm,align=justify] at (4,3) {
+  \tenpoint\tensingle
+  {\bf Proposition I}\par
+  {\em \noindent To construct an {\color{triangle}equilateral triangle}
+    on a given {\color{input}finite straight line}.}
+  \par\vskip1em
+  \noindent
+  Let \A\B\ be the given {\color{input}finite straight line}. \dots
+};
+\endtikzpicture
+
+\medskip
+\caption/f {Exemplo de uso do PGF/TikZ}
+\endinsert
+
+O código completo para gerar a figura é descrito a seguir:
+
+\bgroup
+\def\tthook{\parskip=0pt %\typosize[10.5/13.6]
+   \eightpoint\setbaselineskip[11]
+}
+\begtt
+\midinsert
+\label[exetikz]
+\parindent=0pt
+\usetikzlibrary{calc,intersections,through,backgrounds}
+\tikzpicture[thick,help lines/.style={thin,draw=black!50}]
+\def\A{{\color{input}$A$}}
+\def\B{{\color{input}$B$}}
+\def\C{{\color{output}$C$}}
+\def\D{$D$}
+\def\E{$E$}
+
+\colorlet{input}{blue!80!black}
+\colorlet{triangle}{orange}
+\colorlet{output}{red!70!black}
+
+\coordinate [label=left:\A] (A) at ($ (0,0) + .1*(rand,rand) $);
+\coordinate [label=right:\B] (B) at ($ (1.25,0.25) + .1*(rand,rand) $);
+
+\draw [color=input] (A) -- (B);
+
+\node [name path=D,help lines,draw,label=left:\D] (D) at (A) [circle through=(B)] {};
+\node [name path=E,help lines,draw,label=right:\E] (E) at (B) [circle through=(A)] {};
+
+\path [name intersections={of=D and E,by={[label=above:\C]C}}];
+
+\draw [color=output] (A) -- (C) -- (B);
+
+\foreach \point in {A,B,C}
+\fill [black,opacity=.5] (\point) circle (2pt);
+
+\pgfonlayer{background}
+  \fill[color=triangle!80] (A) -- (C) -- (B) -- cycle;
+\endpgfonlayer
+
+\node [below right, text width=9cm,align=justify] at (4,3) {
+  \tenpoint\tensingle
+  {\bf Proposition I}\par
+  {\em \noindent To construct an {\color{triangle}equilateral triangle}
+    on a given {\color{input}finite straight line}.}
+  \par\vskip1em
+  \noindent
+  Let \A\B\ be the given {\color{input}finite straight line}. \dots
+};
+\endtikzpicture
+
+\medskip
+\caption/f {Exemplo de uso do PGF/TikZ}
+\endinsert
+\endtt
+\par\egroup%
+
+Para maiores detalhes, consulte a documentação do PGF/TikZ. Na documentação, quase todos os exemplos de código utilizam comandos em La\TeX{}. Para funcionar, obviamente devem ser substituídos pelos comandos equivalentes em {\em plain} \TeX{}, descritos na própria documentação, e comandos definidos no \TeX SALQ (como as definições de fontes).
+
+
+\sec Outras formas de criar tabelas
+
+Além da macro definida no OPmac "\table", ou "\ctable" definida no TeXSALQ, existe uma macro chamada {\em Stables} que possui uma sintaxe diferente. Deve-se, porém, tomar o cuidado de colocar o "\input macros/stables" dentro de um grupo toda vez que carregar essa macro, pois ela modifica o caractere "|" que passa a funcionar de forma diferente. Com o "input" dentro do grupo, a alteração fica restrita ao grupo. Lembrando que um grupo é tudo o que fica delimitado entre "{...}" ou entre "\bgroup ... \egroup". A Tabela~\ref[exestb] mostra um exemplo de uso. Para maiores detalhes, ler a documentação do stables.
+
+\midinsert\medskip \label[exestb]
+\caption/t {Exemplo de uso da macro stables}
+\nobreak\medskip
+\bgroup\input macros/stables
+\tenpoint
+\begintable
+\multirow2{\#}\vt\multirow2{Date}\vt\multirow2{Memo}\vt Debit/Credit\elspec
+|||\trule\el
+|||Balance\eltt
+\multirow2{245}|\multirow2{8--2}|\multirow2{Rent}|\$ \hfill 250.00\elspec
+|||\trule\el
+|||\$ \hfill 436.29\elttt{.7pt}
+\multirow2{246}|\multirow2{8--2}|\multirow2{Danson Electric}|\$ \hfill 49.28\elspec
+|||\trule\el
+|||\$ \hfill 387.01\elttt{.7pt}
+\multirow2{247}|\multirow2{8--5}|\multirow2{Jeff’s Grocery}|\$ \hfill 35.88\elspec
+|||\trule\el
+|||\$ \hfill 351.13\elttt{.7pt}
+\multirow2{248}||\multirow2{Void}|\elspec
+|||\el
+|||\elttt{.7pt}
+\multirow2{249}|\multirow2{8--10}|\multirow2{Danson Times}|\$ \hfill 19.00\elspec
+|||\trule\el
+|||\$ \hfill 332.13\endtable
+\egroup
+\endinsert
+
+A seguir, o código que cria a Tabela~\ref[exestb]:
+\bgroup%
+\def\tthook{\parskip=0pt %\typosize[10.5/13.6]
+   \eightpoint\setbaselineskip[11]%
+}%
+\begtt
+\midinsert\medskip \label[exestb]
+\caption/t {Exemplo de uso da macro stables}
+\nobreak\medskip
+{\input macros/stables
+{\tenpoint
+\begintable
+\multirow2{\#}\vt\multirow2{Date}\vt\multirow2{Memo}\vt Debit/Credit\elspec
+|||\trule\el
+|||Balance\eltt
+\multirow2{245}|\multirow2{8--2}|\multirow2{Rent}|\$ \hfill 250.00\elspec
+|||\trule\el
+|||\$ \hfill 436.29\elttt{.7pt}
+\multirow2{246}|\multirow2{8--2}|\multirow2{Danson Electric}|\$ \hfill 49.28\elspec
+|||\trule\el
+|||\$ \hfill 387.01\elttt{.7pt}
+\multirow2{247}|\multirow2{8--5}|\multirow2{Jeff’s Grocery}|\$ \hfill 35.88\elspec
+|||\trule\el
+|||\$ \hfill 351.13\elttt{.7pt}
+\multirow2{248}||\multirow2{Void}|\elspec
+|||\el
+|||\elttt{.7pt}
+\multirow2{249}|\multirow2{8--10}|\multirow2{Danson Times}|\$ \hfill 19.00\elspec
+|||\trule\el
+|||\$ \hfill 332.13\endtable
+}}
+\endinsert
+\endtt
+\par\egroup%
+
+Há ainda outra forma de se montar uma tabela no \TeX{} puro. Para tabelas mais simples, pode-se empregar diretamente primitivas do \TeX{}, descritas no \TeX{}book, como no código a seguir:\par
+
+\bgroup%
+\def\tthook{\parskip=0pt %\typosize[10.5/13.6]
+   \eightpoint\setbaselineskip[11]%
+}%
+\begtt
+\midinsert
+\label[tabtexpuro]
+\caption/t {Exemplo de tabela com uso de primitivas \TeX{}}
+\medskip
+\noindent\hfil\vbox{
+\hrule\vskip 0.1cm
+\settabs \+ \hfill Bulk density of adsorbed solute\hfill\qquad & \hfill Symbol \hfill\cr
+\+ Dimensionless variable & Symbol \cr
+\hrule\vskip 0.1cm
+\+ time 				& $\tau={Dt \over {R_0}^2}$ 			\cr
+\+ concentration 			& $U={C \over C_i}$ 				\cr
+\+ bulk density of adsorbed solute 	& $V={C_A \over {C_A}_i}={C_A \over K C_i}$ 	\cr
+\+ distance 				& $x={r \over R_0}$ 				\cr
+\+ flow of water 			& $2 \nu={rv \over D}={-E \over 2 \pi hDW}$ 	\cr
+\+ flow of water$^*$ 			& $\xi=E\nu$ 					\cr
+\+ root length 				& $\eta = {h \over R_0}$ 			\cr
+\+ radius of soil cylinder 		& $\rho={R_1 \over R_0}$ 			\cr
+\+ demand parameter 			& $\phi={DC_i \over AR_0}$ 			\cr
+\+ demand parameter$^*$ 		& $M={\alpha\nu}$ 				\cr
+\+ rate constant 			& $\lambda={k_a{R_0}^2 \over D}$ 		\cr
+\+ buffer capacity 			& $B={K+\theta \over \theta}$ 			\cr
+\+ bulk density of solute 		& $T={KV+\theta U \over \theta B}$ 		\cr
+\vskip 0.1cm \hrule \vskip 0.1cm
+\begingroup\eightpoint
+\+ $^*$Note that $\nu=-{1 \over 2 \pi h D W}$ & \hfill \cr
+\endgroup
+}\par
+\endinsert
+\endtt%
+\par\egroup%
+
+O resultado é mostrado na Tabela~\ref[tabtexpuro].
+
+\midinsert
+\label[tabtexpuro]
+\caption/t {Exemplo de tabela com uso de primitivas \TeX{}}
+\medskip
+\noindent\hfil\vbox{
+\hrule\vskip 0.1cm
+\settabs \+ \hfill Bulk density of adsorbed solute\hfill\qquad & \hfill Symbol \hfill\cr
+\+ Dimensioness variable & Symbol \cr
+\hrule\vskip 0.1cm
+\+ time 				& $\tau={Dt \over {R_0}^2}$ 			\cr
+\+ concentration 			& $U={C \over C_i}$ 				\cr
+\+ bulk density of adsorbed solute 	& $V={C_A \over {C_A}_i}={C_A \over K C_i}$ 	\cr
+\+ distance 				& $x={r \over R_0}$ 				\cr
+\+ flow of water 			& $2 \nu={rv \over D}={-E \over 2 \pi hDW}$ 	\cr
+\+ flow of water$^*$ 			& $\xi=E\nu$ 					\cr
+\+ root length 				& $\eta = {h \over R_0}$ 			\cr
+\+ radius of soil cylinder 		& $\rho={R_1 \over R_0}$ 			\cr
+\+ demand parameter 			& $\phi={DC_i \over AR_0}$ 			\cr
+\+ demand parameter$^*$ 		& $M={\alpha\nu}$ 				\cr
+\+ rate constant 			& $\lambda={k_a{R_0}^2 \over D}$ 		\cr
+\+ buffer capacity 			& $B={K+\theta \over \theta}$ 			\cr
+\+ bulk density of solute 		& $T={KV+\theta U \over \theta B}$ 		\cr
+\vskip 0.1cm \hrule \vskip 0.1cm
+\begingroup\eightpoint
+\+ $^*$Note that $\nu=-{1 \over 2 \pi h D W}$ & \hfill \cr
+\endgroup
+}\par
+\endinsert
+
+
+\secc Tabelas como no pacote booktabs\fnote{\url{http://petr.olsak.net/opmac-tricks.html}}
+
+Booktabs é um pacote do La\TeX{} que possui mais opções para construção de tabelas. A seguir, é mostrado como pode ser construída a tabela do exemplo da documentação do booktabs (Tabela~\ref[ex_booktabs]), utilizando apenas as ferramentas aqui apresentadas.
+
+\bgroup
+\def\tableA#1#2{\offinterlineskip \def\tmpa{}\tabdata={\kern-1em}\scantabdata#1\relax
+   \halign\expandafter{\the\tabdata\kern-1em\tabstrutA\cr#2\crcr}\egroup}
+
+\def\crtop{\cr \noalign{\hrule height.6pt \kern2.5pt}}
+\def\crbot{\cr \noalign{\kern2.5pt\hrule height.6pt}}
+\def\crmid{\cr \noalign{\kern1pt\hrule\kern1pt}}
+\def\tablinefil{\leaders\hrule height.2pt\hfil\vrule height1.7pt depth1.5pt width0pt }
+
+\midinsert
+\label[ex_booktabs]
+\caption/t {Exemplo de tabela da documentação do pacote {\em booktabs} do La\TeX{}}
+\ctable{llr}{\crtop
+  \multispan2\hfil Item\hfil&          \cr
+  \multispan2\tablinefil\kern.5em&\omit\hfil \cr
+   Animal    & Description & Price (\$) \crmid
+   Gnat      & per gram    &      13.65 \cr
+             & each        &       0.01 \cr
+   Gnu       & stuffed     &      92.50 \cr
+   Emu       & stuffed     &      33.33 \cr
+   Armadillo & frozen      &       8.99 \crbot}
+\endinsert
+\par\egroup
+
+Utilizando o comando "\ctable" do \TeX SALQ, criar essa tabela:
+\begtt
+\ctable{llr}{\crtop
+  \multispan2\hfil Item\hfil&          \cr
+  \multispan2\tablinefil\kern.5em&\omit\hfil \cr
+\endtt
+\begtt
+   Animal    & Description & Price (\$) \crmid
+   Gnat      & per gram    &      13.65 \cr
+             & each        &       0.01 \cr
+   Gnu       & stuffed     &      92.50 \cr
+   Emu       & stuffed     &      33.33 \cr
+   Armadillo & frozen      &       8.99 \crbot}
+\endtt
+
+No entanto, é necessário definir "\crtop", "\crmid", "\crbot" e modificar a espessura da linha de "\tablinefil":
+\begtt
+\def\crtop{\cr \noalign{\hrule height.6pt \kern2.5pt}}
+\def\crbot{\cr \noalign{\kern2.5pt\hrule height.6pt}}
+\def\crmid{\cr \noalign{\kern1pt\hrule\kern1pt}}
+\def\tablinefil{\leaders\hrule height.2pt\hfil\vrule height1.7pt depth1.5pt width0pt }
+\endtt
+
+Finalmente, é necessário remover as lacunas deixadas no primeiro item, e à direita do último. Acrescentar um "\kern-1em" na linha de declaração de tabela esquerda e direita, pois "\tabiteml" e "\tabitemr" são definidos com "\enspace". Para dar o efeito, é necessário redefinir a macro do OPmac "\tableA" interna:
+\begtt
+\def\tableA#1#2{\offinterlineskip \def\tmpa{}\tabdata={\kern-1em}\scantabdata#1
+  \relax\halign\expandafter{\the\tabdata\kern-1em\tabstrutA\cr#2\crcr}\egroup}
+\endtt
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+\cleardoublepage
+
+\chap ERROS COMUNS
+
+
+A seguir são apresentados os erros mais comuns cometidos pelos primeiros utilizadores do modelo. São dúvidas referentes ao uso do \TeX{} e do modelo \TeX SALQ. Esse capítulo será atualizado à  medida que novas dúvidas surgirem, para que futuros utilizadores não incorram nos mesmos erros.
+
+\sec Graus Celsius
+
+Para o símbolo do grau, existe um comando especial, "\circ". Como é um expoente, coloca-se um circunflexo "^" e, em seguida, a letra C. No modo matemático (qualquer coisa entre "$" estará no modo matemático do \TeX{}), as letras aparecerão em itálico. Caso não deseje itálico, use "\rm". Então, zero graus Celsius ($0\,^{\circ}$C) pode ser digitado assim:
+
+\noindent
+"$0\,^{\circ}{\rm C}$"
+
+\noindent
+ou também pode-se escrever: 
+
+\noindent
+"$0\,^{\circ}$C"
+
+\noindent
+colocando o C fora do modo matemático, não ficará em itálico. O "\," serve pra dar um pequeno espaço entre o círculo e o número.
+
+
+\sec Comandos de modo matemático dentro de texto comum
+
+Tomemos como exemplo a frase: Assumindo que "q_e" seja o calor...
+A expressão "q_e" é uma expressão matemática, então deve estar entre "$", ficando assim: Assumindo que "$q_e$" seja o calor...  (resultando $q_e$). Os símbolos do \TeX: sublinhado(\_) e circunflexo("^") são comandos do modo matemático para denotar índice e expoente (ou subescrito e superescrito). Também pode ser usado no texto como sublinhado ou circunflexo, escrevendo-se "\_" ou "\^", caso queira explicitá-los.
+
+Outro exemplo: 
+
+(...) a área do coletor ("m^2")... deve ser escrito assim: a área do coletor ("$m^2$")... Resultando $m^2$.
+
+("W/m^2oC") fica assim: ("$W/m^2\,^{\circ}{\rm C}$"), resultando $W/m^2\,^{\circ}{\rm C}$.
+
+
+\sec Comandos e parâmetros
+
+Tomemos como exemplo
+
+"$$\deltaU = U_d - U_a $$ e $$\deltaX = X_d - X_a$$"
+
+Os comandos devem ser separados de seus parâmetros, caso contrário, o compilador do \TeX{} não vai entender que são coisas distintas e reportará um erro. Então deve-se digitar: "\delta U" e "\delta X" (com espaço), resultando: %$\delta U$ e $\delta X$.
+$$\delta U = U_d - U_a $$ e $$\delta X = X_d - X_a$$
+
+\sec Equações muito longas
+
+Por exemplo, a equação:
+\begtt
+$$q_p + m_s(X_a - X_d)L_v + m_sc_s(T_3 - T_1) + m_sX_ac_a(T_3 - T_1) +
+m_s(X_a - X_d)c_v(T_4 - T_3) -q_e - m_arc_ar(T_4 - T_2) - m_arU_ac_v(T_4 -T_2) = 0 
+\eqmark$$
+\endtt
+\noindent
+irá passar da margem, dessa forma:
+$$q_p + m_s(X_a - X_d)L_v + m_sc_s(T_3 - T_1) + m_sX_ac_a(T_3 - T_1) + m_s(X_a - X_d)c_v(T_4 - T_3) - q_e - m_arc_ar(T_4 - T_2) - m_arU_ac_v(T_4 -T_2) = 0 \eqmark$$
+%
+pois o TeX não faz quebra de linha em equação automaticamente. Uma das formas de fazer isso é usar o comando "\eqalign", e "\cr" para quebrar a linha no ponto desejado:
+\begtt
+$$\eqalign{
+&q_p + m_s(X_a - X_d)L_v + m_sc_s(T_3 - T_1) + m_sX_ac_a(T_3 - T_1)\cr
+&+ m_s(X_a - X_d)c_v(T_4 - T_3) - q_e - m_arc_ar(T_4 - T_2)- 
+m_arU_ac_v(T_4 - T_2) = 0\cr} 
+\eqmark$$
+\endtt
+
+\noindent
+Resultando:
+%
+$$\eqalign{
+&q_p + m_s(X_a - X_d)L_v + m_sc_s(T_3 - T_1) + m_sX_ac_a(T_3 - T_1)\cr
+&+ m_s(X_a - X_d)c_v(T_4 - T_3) - q_e - m_arc_ar(T_4 - T_2)- 
+m_arU_ac_v(T_4 - T_2) = 0\cr}
+\eqmark$$
+%
+O símbolo "&" denota as colunas que ficarão alinhadas.
+
+\sec Posicionamento de equações
+
+Quando uma equação for delimitada por "$" duplo, ou seja, "$$ ... $$", não se deve colocar uma linha em branco entre o texto anterior e a equação, pois isso configura um novo parágrafo e o \TeX{} irá inserir um espaço adicional antes da equação. Por exemplo:
+
+\begtt
+Rearranjando os termos, tem-se:
+
+$$m_s(X_d - X_a) + m_ar(U_d - U_a) = 0 \eqmark$$
+próxima linha de texto, sem indentação
+\endtt
+
+Resulta em:
+
+Rearranjando os termos, tem-se:
+
+$$m_s(X_d - X_a) + m_ar(U_d - U_a) = 0 \eqmark$$
+próxima linha de texto, sem indentação
+
+Para corrigir a falha, deve-se eliminar qualquer linha em branco antes ou após a equação. Há várias formas para isso, ficando a cargo do utilizador escolher a forma que mais agrada:
+
+\begtt
+Rearranjando os termos, tem-se:
+$$m_s(X_d - X_a) + m_ar(U_d - U_a) = 0 \eqmark$$
+próxima linha de texto, sem indentação
+\endtt
+
+\begtt
+Rearranjando os termos, tem-se:
+$$
+m_s(X_d - X_a) + m_ar(U_d - U_a) = 0 \eqmark
+$$
+próxima linha de texto, sem indentação
+\endtt
+
+\begtt
+Rearranjando os termos, tem-se:
+%
+$$m_s(X_d - X_a) + m_ar(U_d - U_a) = 0 \eqmark$$
+%
+próxima linha de texto, sem indentação
+\endtt
+
+Ou pode-se explicitar um "\noindent", deixando ou não uma linha em branco após a equação:
+
+\begtt
+Rearranjando os termos, tem-se:
+%
+$$m_s(X_d - X_a) + m_ar(U_d - U_a) = 0 \eqmark$$
+
+\noindent
+próxima linha de texto, sem indentação
+\endtt
+
+Qualquer dos casos resulta em:
+
+Rearranjando os termos, tem-se:
+$$
+m_s(X_d - X_a) + m_ar(U_d - U_a) = 0 \eqmark
+$$
+próxima linha de texto, sem indentação
+
+\noindent
+com o mesmo espaçamento entre a linha anterior e a próxima linha.
+
+
+\sec Palavras ou abreviaturas dentro de equações
+
+As letras (que representam variáveis) nas equações aparecem em itálico por {\em default}. Uma sequência de letras são interpretadas como várias variáveis sendo multiplicadas, e dessa forma o \TeX{} (e também o La\TeX{}) trata o espaçamento entre elas de uma forma diferente de um texto normal em itálico. Caso a sequência de letras forme uma palavra ou abreviatura, é desejável que o espaçamento horizontal entre os caracteres seja tratado como num texto.
+
+Vejamos o exemplo: "$T_{arg}=...$" resulta em $T_{arg}=...$. Note a letra "g" com espaçamento diferente. Para corrigir o espaçamento, deve-se explicitar que trata-se de um texto em itálico, e não várias letras multiplicadas. Para tal, usa-se o "\it" no bloco: "$T_{\it arg}=...$" resultando em $T_{\it arg}=...$. Isso é equivalente a utilizar no La\TeX{} o "\mathit{}". Nem toda combinação de letras causa esse problema, mas recomendamos que se tome precaução com o uso do comando.
+
+Caso não se deseje o itálico, empregue o "\rm": "$T_{\rm arg}=...$", ou seja, $T_{\rm arg}=...$.
+
+Outra forma de escrever texto em equação (quando o texto não é um índice) é usando "\hbox". Por exemplo: "$x=y+1 \hbox{, ou seja, }y=x-1$", resulta \asp{$x=y+1 \hbox{, ou seja, }y=x-1$}. Nesse caso não é necessário explicitar "\rm", pois aqui o "\hbox" é um bloco dentro da equação fora do modo matemático. Isso quer dizer que comandos matemáticos não funcionam dentro desse "\hbox", apenas texto normal, a não ser que se abra outro conjunto "$" nesse bloco.
+
+\secc Palavras acentuadas em equações
+
+A fonte utilizada no texto normal deste documento é a Latin Modern (LM), uma cópia da original Computer Modern (CM) criada por Knut. A LM possui caracteres acentuados num único glifo, o que permite usar caracteres acentuados diretamente no texto, sem comandos especiais. Já a CM une dois glifos para formar um caractere acentuado, necessitando de comandos para acentuação. O modo matemático sempre utiliza fontes CM por conta de símbolos matemáticos. Desse modo, para acentuar palavras em equações, deve-se usar os comandos de acentuação do modo matemático. Por exemplo, \asp{$T_{\it \acute{a}gua}=...$} pode ser digitado usando "$T_{\it \acute{a}gua}=...$". Note que em texto normal os comandos para acentuação, quando empregados (por exemplo no arquivo de dados de referências bibliográficas), diferem dos comandos matemáticos. Por exemplo, \'agua, escreve-se "\'agua" dentro do arquivo de referências. Para uma lista completa dos comandos de acentuação do modo matemático e de texto normal, veja o TexRefCard incluso no diretório {\em documentação adicional}, ou os outros documentos.
