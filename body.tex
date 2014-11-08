@@ -212,7 +212,7 @@ Como o modelo \TeX SALQ está em sua primeira versão e em constante desenvolvimen
 
 Este documento não foi construído com o intuito de servir como um guia para usar o \TeX{} puro. Cremos, no entanto, que o usuário novato é capaz de criar um documento \TeX{} normal, seguindo o que aqui está exposto. Recomendamos a leitura de documentação \TeX{} adicional, tais como os primeiros capítulos do "texbook.pdf" \cite[tex1], "Gentle.pdf" \cite[tex2] e da documentação que originou o modelo \TeX SALQ, o conjunto de macros OPmac "opmac-u-en.pdf" \cite[opmac] contida no diretório "documentacao-adicional". Este capítulo refere-se a algumas seções individuais da documentação OPmac.
 
-Toda a documentação do OPmac é válida com exceção da seção 1 que explica o uso das fontes. Como a língua utilizada no OPmac é a tcheca, foi necessário utilizar outra definição de fontes que abrangesse o português, no caso o conjunto de macros escolhido foi o "fontch" \cite[fontch]. Mais detalhes na seção \ref[fontes].
+Toda a documentação do OPmac é válida com exceção da seção 1 que explica o uso das fontes. Como a língua utilizada no OPmac é a tcheca, foi necessário utilizar outra definição de fontes que abrangesse o português, no caso o conjunto de macros escolhido foi o "fontch" \cite[fontch], com algumas correções, sendo a macro renomeada para "mfontch". Mais detalhes na seção \ref[fontes].
 
 \sec Capítulos, seções, subseções e apêndices
 
@@ -371,7 +371,7 @@ O comando "\eqmark" ao fim da equação a enumera automaticamente. O uso do sinal 
 \label[fontes]
 \secc Tamanhos de fonte e espaçamento
 
-A fonte padrão utilizada no modelo é Latin Modern (fontes cork-LM, carregadas na macro "fontch"). Os tamanhos de fontes predefinidos são 8, 10, 12, 14, 20 e 24.
+A fonte padrão utilizada no modelo é Latin Modern (fontes cork-LM, carregadas na macro "mfontch"). Os tamanhos de fontes predefinidos são 8, 10, 12, 14, 20 e 24.
 Os tamanhos podem ser definidos respectivamente pelos comandos:
 \begtt
 \eightpoint
@@ -576,12 +576,13 @@ Para maiores detalhes, consulte a documentação do PGF/TikZ. Na documentação, qua
 
 \sec Outras formas de criar tabelas
 
-Além da macro definida no OPmac "\table", ou "\ctable" definida no TeXSALQ, existe uma macro chamada {\em Stables} que possui uma sintaxe diferente. Deve-se, porém, tomar o cuidado de colocar o "\input macros/stables" dentro de um grupo toda vez que carregar essa macro, pois ela modifica o caractere "|" que passa a funcionar de forma diferente. Com o "input" dentro do grupo, a alteração fica restrita ao grupo. Lembrando que um grupo é tudo o que fica delimitado entre "{...}" ou entre "\bgroup ... \egroup". A Tabela~\ref[exestb] mostra um exemplo de uso. Para maiores detalhes, ler a documentação do stables.
+Além da macro definida no OPmac "\table", ou "\ctable" definida no TeXSALQ, existe uma macro chamada {\em stables} que possui uma sintaxe diferente. Para o TeXSALQ, foi feita uma modificação da {\em stables}, chamada {\em mstables}, com opção para tabela sem bordas (norma da ESALQ).  Deve-se, porém, tomar o cuidado de colocar o "\input macros/mstables" dentro de um grupo toda vez que carregar essa macro, pois ela modifica o caractere "|" que passa a funcionar de forma diferente. Com o "input" dentro do grupo, a alteração fica restrita ao grupo. Lembrando que um grupo é tudo o que fica delimitado entre "{...}" ou entre "\bgroup ... \egroup". Caso utilize "midinsert" e "endinsert", não é necessário explicitar delimitadores de grupo, pois esses comandos já possuem delimitador de grupo em sua definição. A Tabela~\ref[exestb] mostra um exemplo de uso. Para maiores detalhes, ler a documentação do stables.
 
 \midinsert\medskip \label[exestb]
 \caption/t {Exemplo de uso da macro stables}
 \nobreak\medskip
-\bgroup\input macros/stables
+\input macros/mstables
+\nostablesbordertrue
 \tenpoint
 \begintable
 \multirow2{\#}\vt\multirow2{Date}\vt\multirow2{Memo}\vt Debit/Credit\elspec
@@ -593,7 +594,7 @@ Além da macro definida no OPmac "\table", ou "\ctable" definida no TeXSALQ, exis
 \multirow2{246}|\multirow2{8--2}|\multirow2{Danson Electric}|\$ \hfill 49.28\elspec
 |||\trule\el
 |||\$ \hfill 387.01\elttt{.7pt}
-\multirow2{247}|\multirow2{8--5}|\multirow2{Jeff’s Grocery}|\$ \hfill 35.88\elspec
+\multirow2{247}|\multirow2{8--5}|\multirow2{Jeff's Grocery}|\$ \hfill 35.88\elspec
 |||\trule\el
 |||\$ \hfill 351.13\elttt{.7pt}
 \multirow2{248}||\multirow2{Void}|\elspec
@@ -602,7 +603,6 @@ Além da macro definida no OPmac "\table", ou "\ctable" definida no TeXSALQ, exis
 \multirow2{249}|\multirow2{8--10}|\multirow2{Danson Times}|\$ \hfill 19.00\elspec
 |||\trule\el
 |||\$ \hfill 332.13\endtable
-\egroup
 \endinsert
 
 A seguir, o código que cria a Tabela~\ref[exestb]:
@@ -614,8 +614,9 @@ A seguir, o código que cria a Tabela~\ref[exestb]:
 \midinsert\medskip \label[exestb]
 \caption/t {Exemplo de uso da macro stables}
 \nobreak\medskip
-{\input macros/stables
-{\tenpoint
+\input macros/mstables
+\nostablesbordertrue
+\tenpoint
 \begintable
 \multirow2{\#}\vt\multirow2{Date}\vt\multirow2{Memo}\vt Debit/Credit\elspec
 |||\trule\el
@@ -626,7 +627,7 @@ A seguir, o código que cria a Tabela~\ref[exestb]:
 \multirow2{246}|\multirow2{8--2}|\multirow2{Danson Electric}|\$ \hfill 49.28\elspec
 |||\trule\el
 |||\$ \hfill 387.01\elttt{.7pt}
-\multirow2{247}|\multirow2{8--5}|\multirow2{Jeff’s Grocery}|\$ \hfill 35.88\elspec
+\multirow2{247}|\multirow2{8--5}|\multirow2{Jeff's Grocery}|\$ \hfill 35.88\elspec
 |||\trule\el
 |||\$ \hfill 351.13\elttt{.7pt}
 \multirow2{248}||\multirow2{Void}|\elspec
@@ -635,7 +636,6 @@ A seguir, o código que cria a Tabela~\ref[exestb]:
 \multirow2{249}|\multirow2{8--10}|\multirow2{Danson Times}|\$ \hfill 19.00\elspec
 |||\trule\el
 |||\$ \hfill 332.13\endtable
-}}
 \endinsert
 \endtt
 \par\egroup%
