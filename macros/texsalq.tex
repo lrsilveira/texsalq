@@ -20,7 +20,7 @@
 
 %\def\tmp#1#2\end{\if$#2$\else 
 %   \esalqstyleERR {csplain doesn't read UTF-8 encoding, may be it is an old version}\fi}%
-%\tmp ƒç\end
+%\tmp √Ñ¬ç\end
 
 \newread\testinput
 \def\testfile#1#2{\openin\testinput=#1
@@ -205,8 +205,8 @@
 }
 \edef\pt{\csname lan:7\endcsname}
 
-\mtdef {usp}   {University of S„o Paulo} 
-               {Universidade de S„o Paulo} {} 
+\mtdef {usp}   {University of S√£o Paulo} 
+               {Universidade de S√£o Paulo} {} 
 
 \mtdef {esalq}    {``Luiz de Queiroz'' College of Agriculture}
                   {Escola Superior de Agricultura ``Luiz de Queiroz''} {}
@@ -214,20 +214,20 @@
 \mtdef {abstract}     {ABSTRACT}          {RESUMO}           {}
 \mtdef {thanks}       {ACKNOWLEDGEMENT}   {AGRADECIMENTOS}   {} 
 %\mtdef {keywords}     {Keywords}          {Palavras-chave}   {}
-\mtdef {contents}     {CONTENTS}          {SUM¡RIO}          {}
+\mtdef {contents}     {CONTENTS}          {SUM√ÅRIO}          {}
 \mtdef {tables}       {LIST OF TABLES}    {LISTA DE TABELAS} {}
 \mtdef {figures}      {LIST OF FIGURES}   {LISTA DE FIGURAS} {}
 \mtdef {supervisor}   {Supervisor}        {Orientador}       {}
-\mtdef {bibliography} {REFERENCES}        {REFER NCIAS}      {}
-\mtdef {appendix}     {APPENDIX}          {AP NDICE}         {}  
-\mtdef {appendixpl}   {APPENDIXES}        {AP NDICES}        {}
+\mtdef {bibliography} {REFERENCES}        {REFER√äNCIAS}      {}
+\mtdef {appendix}     {APPENDIX}          {AP√äNDICE}         {}  
+\mtdef {appendixpl}   {APPENDIXES}        {AP√äNDICES}        {}
 %\mtdef {gradem}       {Master}            {Mestre}           {}
 %\mtdef {graded}       {Ph.D.}             {Doutor}           {}
 
 \mtdef {M} {Thesis submitted in partial fulfillment of requirements for the degree of Master in \the\titarea. Area of concentration: \the\concarea}   
-           {DissertaÁ„o apresentada para obtenÁ„o do tÌtulo de Mestre em \the\titarea. ¡rea de concentraÁ„o: \the\concarea}   {}
+           {Disserta√ß√£o apresentada para obten√ß√£o do t√≠tulo de Mestre em \the\titarea. √Årea de concentra√ß√£o: \the\concarea}   {}
 \mtdef {D} {Thesis submitted in partial fulfillment of requirements for the degree of Doctor in \the\titarea. Area of concentration: \the\concarea}     
-           {Tese apresentada para obtenÁ„o do tÌtulo de Doutor em \the\titarea. ¡rea de concentraÁ„o: \the\concarea}   {}
+           {Tese apresentada para obten√ß√£o do t√≠tulo de Doutor em \the\titarea. √Årea de concentra√ß√£o: \the\concarea}   {}
 
 %\def\keepacc#1{\slet{mt:#10:sk}{mt:#1:sk}\slet{mt:#10:\pt}{mt:#1:\pt}}
 %\def\keepaccents{\keepacc{thanks}%
@@ -480,7 +480,7 @@
            \fi}
 }
 
-%%% Dedication page (DedicatÛria) (Opcional)
+%%% Dedication page (Dedicat√≥ria) (Opcional)
 
 \def\dedicpage{\bgroup\twelvepoint\it
                \twelveonehalf
@@ -640,7 +640,7 @@
 \newcount\secccnum
 
 \def\chaphook#1\relax{\secnum=0 \seccnum=0 \secccnum=0 \relax}
-\def\sechook#1\relax{\seccnum=0 \relax}
+\def\sechook#1\relax{\seccnum=0 \secccnum=0 \relax}
 
 \def\printseccc#1{\par \norempenalty-200 \medskip
   {\secccfont \noindent \dotocnum{\thetocnum\quad}#1\nbpar}%
