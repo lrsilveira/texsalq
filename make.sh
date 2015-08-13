@@ -1,4 +1,5 @@
 #!/bin/bash
+## test
 
 if [ $# -eq 0 ]; then
   file='texsalq-doc'
