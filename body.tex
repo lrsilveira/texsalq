@@ -678,6 +678,7 @@ Há ainda outra forma de se montar uma tabela no \TeX{} puro. Para tabelas mais s
 \endtt%
 \par\egroup%
 
+
 O resultado é mostrado na Tabela~\ref[tabtexpuro].
 
 \midinsert
@@ -919,8 +920,35 @@ Vejamos o exemplo: "$T_{arg}=...$" resulta em $T_{arg}=...$. Note a letra "g" co
 
 Caso não se deseje o itálico, empregue o "\rm": "$T_{\rm arg}=...$", ou seja, $T_{\rm arg}=...$.
 
-Outra forma de escrever texto em equação (quando o texto não é um índice) é usando "\hbox". Por exemplo: "$x=y+1 \hbox{, ou seja, }y=x-1$", resulta \asp{$x=y+1 \hbox{, ou seja, }y=x-1$}. Nesse caso não é necessário explicitar "\rm", pois aqui o "\hbox" é um bloco dentro da equação fora do modo matemático. Isso quer dizer que comandos matemáticos não funcionam dentro desse "\hbox", apenas texto normal, a não ser que se abra outro conjunto "$" nesse bloco.
+Outra forma de escrever texto em equação (quando o texto não é um índice) é usando "\hbox". Por exemplo: "$x=y+1 \hbox{, ou seja, }y=x-1$", resulta \asp{$x=y+1 \hbox{, ou seja, }y=x-1$}. Nesse caso não é necessário explicitar "\rm", pois aqui o "\hbox" é um bloco dentro da equação fora do modo matemático. Isso quer dizer que comandos matemáticos não funcionam dentro desse "\hbox", apenas texto normal, a não ser que se abra outro conjunto "\$" nesse bloco.
+
+
 
 \secc Palavras acentuadas em equações
 
 A fonte utilizada no texto normal deste documento é a Latin Modern (LM), uma cópia da original Computer Modern (CM) criada por Knut. A LM possui caracteres acentuados num único glifo, o que permite usar caracteres acentuados diretamente no texto, sem comandos especiais. Já a CM une dois glifos para formar um caractere acentuado, necessitando de comandos para acentuação. O modo matemático sempre utiliza fontes CM por conta de símbolos matemáticos. Desse modo, para acentuar palavras em equações, deve-se usar os comandos de acentuação do modo matemático. Por exemplo, \asp{$T_{\it \acute{a}gua}=...$} pode ser digitado usando "$T_{\it \acute{a}gua}=...$". Note que em texto normal os comandos para acentuação, quando empregados (por exemplo no arquivo de dados de referências bibliográficas), diferem dos comandos matemáticos. Por exemplo, \'agua, escreve-se "\'agua" dentro do arquivo de referências. Para uma lista completa dos comandos de acentuação do modo matemático e de texto normal, veja o TexRefCard incluso no diretório {\em documentação adicional}, ou os outros documentos.
+
+\sec Bug 
+
+O  Bug ocorre quando se usa "\ref" dentro de "\caption" e "\sec". Abaixo descrevo um exemplo simples. Primeiro, criemos a seguinte equação:
+\label[van]
+ $$
+   \theta_s = \theta_r + {\theta_s - \theta_r \over [1+|\alpha h|^n]^{1 \over n}}  \eqmark
+  $$
+ onde, $\theta_s$ e $\theta_r$ são os conteúdos de água de saturação e residual, respectivamente; $h$ é potencial matricial de água do solo e $\alpha$ e $n$ são coeficientes empíricos. Os valores dos parâmetros para um solo argiloso são mostrados na Tabela~\ref[van].
+
+Agora, vou tentar usar "\ref" no "\caption" data tabela. Aí ocorre o erro. O erro não  ocorre se eu usar "\ref" dentro da tabela.
+
+\midinsert\medskip \label[tab:van]
+%\caption/t {Parâmetros da eq.~xxx para um solo argiloso}
+\caption/t {Parâmetros da eq.~\ref[van] para um solo argiloso}
+\ctable{ll}{
+\crl Parâmetro      &  Valor \crl %\tskip4pt
+    $\theta_s$        & 0.38 \cr
+    $\theta_r$        & 0.12 \cr
+    $\alpha$          & 0.5  \cr
+    $n$               & 1.2 \crl
+   número da eq      & \ref[van] \crl
+}
+\endinsert
+
