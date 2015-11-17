@@ -11,19 +11,19 @@
 \worktype [O/PT] % Type: M = master, D = Ph.D., O = other
                  % / the language: PT = Portuguese, EN = English
 
-\title      {\TeX \kern -.1667em\lower .5ex\hbox{SALQ} -- Instruções de uso: modelo em \TeX{} puro para digitação de dissertações e teses na ESALQ/USP}
+\title      {\TeX \kern -.1667em\lower .5ex\hbox{SALQ} -- InstruÃ§Ãµes de uso: modelo em \TeX{} puro para digitaÃ§Ã£o de dissertaÃ§Ãµes e teses na ESALQ/USP}
 \author     {Luciano Roberto da Silveira / Andre Herman Freire Bezerra}
-\authorinfo {Bacharel em Ciências dos Alimentos / Bacharel em Engenharia Agronômica}
+\authorinfo {Bacharel em CiÃªncias dos Alimentos / Bacharel em Engenharia AgronÃ´mica}
 \city       {Piracicaba}
 \date       {2014}
 \supervisor {Prof. Dr. \bf\uppercase{Nome do Orientador}}  % One or more supervisors
-\workname   {Documentação do modelo desenvolvido em \TeX{} puro para dissertações e teses da ESALQ, baseado no modelo CTUstyle, de Petr Ol\v{s}ák} % Used only if \worktype [O/*] (Other)
+\workname   {DocumentaÃ§Ã£o do modelo desenvolvido em \TeX{} puro para dissertaÃ§Ãµes e teses da ESALQ, baseado no modelo CTUstyle, de Petr Ol\v{s}Ã¡k} % Used only if \worktype [O/*] (Other)
 
             % Title / Subtitle in minor language:
 \titleEN    {\TeX \kern -.1667em\lower .5ex\hbox{SALQ} -- the user manual (the plain\TeX{} template for theses at ESALQ/USP)}
 %\titlePT    {}
-\titarea    {Ciências}
-\concarea   {Engenharia de Sistemas Agrícolas}
+\titarea    {CiÃªncias}
+\concarea   {Engenharia de Sistemas AgrÃ­colas}
 \pagetwo    {}  % The text printed on the page 2 at the bottom.
 \dedication {      %  Optional. Use main language here
      Ao passado, \par\vskip 0.3cm
@@ -32,11 +32,11 @@
     Com amor, \bfit DEDICO\par
 }
 \thanks     {      %  Optional. Use main language here
-    A Jorge Alexandre Wiendl, por nos encorajar na utilização do \TeX{} puro, dando o pontapé inicial e contribuindo com muitas dicas de programação para o modelo criado. O trabalho foi um grande desafio. % No início achamos loucura, mas com a prática, percebemos algumas vantagens sobre o \LaTeX{}, como a redução do número de linhas de código e o controle total de todos os detalhes do documento. O trabalho foi encarado como um grande desafio.
+    A Jorge Alexandre Wiendl, por nos encorajar na utilizaÃ§Ã£o do \TeX{} puro, dando o pontapÃ© inicial e contribuindo com muitas dicas de programaÃ§Ã£o para o modelo criado. O trabalho foi um grande desafio. % No inÃ­cio achamos loucura, mas com a prÃ¡tica, percebemos algumas vantagens sobre o \LaTeX{}, como a reduÃ§Ã£o do nÃºmero de linhas de cÃ³digo e o controle total de todos os detalhes do documento. O trabalho foi encarado como um grande desafio.
 
-    A Ismael Meurer, o primeiro a utilizar o modelo antes da primeira versão estar concluída, incentivando a continuação do trabalho e relatando as dificuldades iniciais. A ele e ao Fernando Thomazini, também utilizador do modelo, por terem encontrado bugs importantes, corrigidos posteriormente, possibilitando melhoria.
+    A Ismael Meurer, o primeiro a utilizar o modelo antes da primeira versÃ£o estar concluÃ­da, incentivando a continuaÃ§Ã£o do trabalho e relatando as dificuldades iniciais. A ele e ao Fernando Thomazini, tambÃ©m utilizador do modelo, por terem encontrado bugs importantes, corrigidos posteriormente, possibilitando melhoria.
 
-   A Petr Ol\v{s}ák, professor na Universidade Técnica Checa em Praga, autor do conjunto de macros tomadas como base para esse trabalho; pelo pronto e valioso suporte com as macros utilizadas, corrigindo os bugs relatados.
+   A Petr Ol\v{s}Ã¡k, professor na Universidade TÃ©cnica Checa em Praga, autor do conjunto de macros tomadas como base para esse trabalho; pelo pronto e valioso suporte com as macros utilizadas, corrigindo os bugs relatados.
 }
 \epigraph   {       %  Optional. Use main language here
    {\sl Toda a nossa ci\^encia, comparada com a realidade, \'e primitiva e infantil --- e, no entanto, \'e a coisa mais preciosa que temos.}\par\vskip 1.3cm
@@ -50,17 +50,17 @@ Albert Einstein
    typesets their content to fulfil the university formal rules.
 }
 \abstractPT {%
-   Este documento mostra a utilização do modelo \TeX SALQ em \TeX{} puro,
-   (que poderia ser) oficialmente recomendado para dissertações e teses na  ESALQ/USP. O modelo
-    define todos os elementos estruturais obrigatórios em dissertações e teses e
-    edita seu conteúdo para cumprir as regras formais da universidade.
+   Este documento mostra a utilizaÃ§Ã£o do modelo \TeX SALQ em \TeX{} puro,
+   (que poderia ser) oficialmente recomendado para dissertaÃ§Ãµes e teses na  ESALQ/USP. O modelo
+    define todos os elementos estruturais obrigatÃ³rios em dissertaÃ§Ãµes e teses e
+    edita seu conteÃºdo para cumprir as regras formais da universidade.
 }
 
 \keywordsEN {%
    document design template; master, Ph.D. thesis; \TeX{}.
 }
 \keywordsPT {%
-  modelo de documento; dissertação de mestrado; tese de doutorado; \TeX{}.
+  modelo de documento; dissertaÃ§Ã£o de mestrado; tese de doutorado; \TeX{}.
 }
 
 
@@ -68,6 +68,9 @@ Albert Einstein
 \def\emph#1{{\it #1}}
 \def\ttb{\tt\char`\\} %  sequence control printing of Tables
 \def\asp#1{``#1''} % facilitates the use of quotation marks
+% macro bfeq to bold math symbols. Usage example: \bfeq{$x^2+4$}
+\long\def\bfeq#1{\setbox0=\hbox{#1}\copy0\kern-\wd0%
+\kern0.02em\raise0.02ex\copy0\kern-\wd0\kern0.02em\box0}
 
 %\draft     % Uncomment this if the version of your document is working only.
 %\linespacing=1.7  % uncomment this if you need more spaces between lines
