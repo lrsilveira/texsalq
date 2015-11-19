@@ -13,7 +13,7 @@
 
 \def\esalqstyleERR#1{\message{ERROR -- #1.}\expandafter\end}
 
-\ifx\pdfoutput\undefined
+\ifx\pdfoutput\undefinedS
    \esalqstyleERR {pdfTeX isn't detected, use ``pdftex \jobname'' command}%
 \fi
 \pdfoutput=1
@@ -218,7 +218,7 @@
 \mtdef {contents}     {CONTENTS}          {SUMÁRIO}          {}
 \mtdef {tables}       {LIST OF TABLES}    {LISTA DE TABELAS} {}
 \mtdef {figures}      {LIST OF FIGURES}   {LISTA DE FIGURAS} {}
-\mtdef {supervisor}   {Supervisor}        {Orientador}       {}
+\mtdef {supervisor}   {Advisor}        {Orientador}       {}
 \mtdef {bibliography} {REFERENCES}        {REFERÊNCIAS}      {}
 \mtdef {appendix}     {APPENDIX}          {APÊNDICE}         {}  
 \mtdef {appendixpl}   {APPENDIXES}        {APÊNDICES}        {}
@@ -566,8 +566,8 @@
      \cleardoublepage\abstractpageEN \vfil\break
    \else
      \let\titleEN=\title%
-     \cleardoublepage\abstractpageEN
-     \cleardoublepage\abstractpagePT \vfil\break
+     \cleardoublepage\abstractpagePT	% segundo Eliana da biblioteca, PT vem antes mesmo em tese em ingles
+     \cleardoublepage\abstractpageEN \vfil\break
    \fi
 }
 
