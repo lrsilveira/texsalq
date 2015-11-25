@@ -1,0 +1,7 @@
+*.swp
+*~
+*.ref
+*.log
+*.aux
+*.fmt
+Thumbs.db
