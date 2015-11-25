@@ -467,8 +467,9 @@
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   
 
- \def\cite[#1]{{\citeA#1,,,\citeopen\printsavedcites\citeclose}%
-              \let\citeseptype\ABCIcitecolondefault}
+ \def\cite[#1]{\let\citeseptype\ABCIcitecolondefault% Setting the variable before anything
+              {\citeA#1,,,\citeopen\printsavedcites\citeclose}%
+              }%
 
  \def\citeA #1#2,{\if#1,\else 
    \if *#1\addcitelist{*}\expandafter \skiptorelax \fi
@@ -503,8 +504,9 @@
   %
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
- \def\citeonline[#1]{{\citeonlineA#1,,,\printsavedcites}%
-                    \let\citeseptype\ABCIcitecommadefault}
+ \def\citeonline[#1]{\let\citeseptype\ABCIcitecommadefault% Setting the variable before anything
+                    {\citeonlineA#1,,,\printsavedcites}%
+                    }%
 
  \def\citeonlineA #1#2,{\if#1,\else 
    \if *#1\addcitelist{*}\expandafter \skiptorelax \fi
